@@ -340,7 +340,7 @@
     <script>
         const dictionaries = {
             coding: ["cyber", "matrix", "orbit", "quantum", "script", "terminal", "protocol", "firewall", "kernel", "syntax", "runtime", "binary", "packet", "router", "cloud", "buffer", "crypto", "server", "nodes", "gateway", "payload", "glitch", "vector", "stream", "logic", "array", "token", "hash"],
-            scifi: ["nebula", "galaxy", "starfighter", "hyperdrive", "plasma", "android", "cortex", "android", "photon", "singularity", "void", "starlight", "reactor", "cruiser", "hologram", "pulsar", "quasar", "tachyon", "matrix", "beacon"],
+            scifi: ["nebula", "galaxy", "starfighter", "hyperdrive", "plasma", "android", "cortex", "photon", "singularity", "void", "starlight", "reactor", "cruiser", "hologram", "pulsar", "quasar", "tachyon", "matrix", "beacon"],
             common: ["action", "bridge", "castle", "danger", "energy", "forest", "garden", "harbor", "island", "jungle", "kingdom", "lantern", "magnet", "nebula", "palace", "rocket", "station", "temple", "valley", "window", "yellow", "zenith"]
         };
 
@@ -381,7 +381,6 @@
         const finalBadgesEl = document.getElementById('final-badges');
         const toastEl = document.getElementById('achievement-toast');
 
-        // Config Selections
         document.querySelectorAll('.mode-chip').forEach(chip => {
             chip.addEventListener('click', () => {
                 document.querySelectorAll('.mode-chip').forEach(c => c.classList.remove('active'));
@@ -401,7 +400,6 @@
         startBtn.addEventListener('click', startGame);
         restartBtn.addEventListener('click', startGame);
 
-        // Audio synthesizer using Web Audio API
         let audioCtx = null;
         function playTone(freq, type, duration) {
             try {
@@ -419,7 +417,6 @@
             } catch(e) {}
         }
 
-        // Particle generation effect
         function spawnParticles(x, y, color = '#00ffcc') {
             for (let i = 0; i < 10; i++) {
                 let p = document.createElement('div');
