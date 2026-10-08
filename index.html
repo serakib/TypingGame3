@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TypeBlitz Supreme // Ultimate Edition</title>
+    <title>TypeBlitz Supreme // Evo Edition</title>
     <style>
         * {
             box-sizing: border-box;
@@ -40,7 +40,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 25px;
+            padding: 10px 25px;
             background: rgba(8, 12, 20, 0.95);
             border-bottom: 2px solid #00ffcc44;
             box-shadow: 0 0 25px rgba(0, 255, 204, 0.15);
@@ -48,7 +48,7 @@
         }
 
         .logo {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             letter-spacing: 2px;
             text-shadow: 0 0 10px #00ffcc;
@@ -56,8 +56,8 @@
 
         .stats-container {
             display: flex;
-            gap: 20px;
-            font-size: 0.95rem;
+            gap: 15px;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -102,50 +102,19 @@
             transition: transform 0.05s;
         }
 
-        .target.special-bomb {
-            background: rgba(255, 50, 50, 0.15);
-            border-color: #ff3333;
-            box-shadow: 0 0 18px #ff3333;
-            color: #ffcccc;
-        }
+        .target.special-bomb { background: rgba(255, 50, 50, 0.15); border-color: #ff3333; box-shadow: 0 0 18px #ff3333; color: #ffcccc; }
+        .target.special-freeze { background: rgba(50, 150, 255, 0.15); border-color: #3399ff; box-shadow: 0 0 18px #3399ff; color: #cce6ff; }
+        .target.boss-word { background: rgba(255, 0, 255, 0.15); border: 2px dashed #ff00ff; box-shadow: 0 0 25px #ff00ff; font-size: 1.3rem; color: #ffccff; padding: 10px 18px; }
 
-        .target.special-freeze {
-            background: rgba(50, 150, 255, 0.15);
-            border-color: #3399ff;
-            box-shadow: 0 0 18px #3399ff;
-            color: #cce6ff;
-        }
+        .target .matched { color: #00ffcc; text-shadow: 0 0 8px #00ffcc; font-weight: bold; }
+        .target.special-bomb .matched { color: #ff3333; text-shadow: 0 0 8px #ff3333; }
+        .target.boss-word .matched { color: #ff00ff; text-shadow: 0 0 8px #ff00ff; }
 
-        .target.boss-word {
-            background: rgba(255, 0, 255, 0.15);
-            border: 2px dashed #ff00ff;
-            box-shadow: 0 0 25px #ff00ff;
-            font-size: 1.3rem;
-            color: #ffccff;
-            padding: 10px 18px;
-        }
-
-        .target .matched {
-            color: #00ffcc;
-            text-shadow: 0 0 8px #00ffcc;
-            font-weight: bold;
-        }
-        
-        .target.special-bomb .matched {
-            color: #ff3333;
-            text-shadow: 0 0 8px #ff3333;
-        }
-
-        .target.boss-word .matched {
-            color: #ff00ff;
-            text-shadow: 0 0 8px #ff00ff;
-        }
-
-        /* Achievement Toast Popup */
+        /* Toast Popup */
         #achievement-toast {
             position: absolute;
             top: 20px;
-            right: -300px;
+            right: -350px;
             background: rgba(0, 255, 204, 0.9);
             color: #030508;
             padding: 12px 20px;
@@ -155,9 +124,7 @@
             transition: right 0.4s ease-in-out;
             z-index: 100;
         }
-        #achievement-toast.show {
-            right: 20px;
-        }
+        #achievement-toast.show { right: 20px; }
 
         /* Footer Input Area */
         footer {
@@ -192,59 +159,71 @@
             box-shadow: 0 0 22px rgba(0, 255, 204, 0.4), inset 0 0 15px rgba(0, 255, 204, 0.3);
         }
 
-        .instructions {
-            font-size: 0.8rem;
-            color: #558877;
-            letter-spacing: 1px;
-        }
+        .instructions { font-size: 0.75rem; color: #558877; letter-spacing: 1px; }
 
         /* Overlays */
         .overlay {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(3, 5, 8, 0.92);
+            background: rgba(3, 5, 8, 0.94);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            gap: 20px;
+            gap: 15px;
+            overflow-y: auto;
+            padding: 20px;
         }
 
         .overlay h1 {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             color: #00ffcc;
             text-shadow: 0 0 20px #00ffcc;
             letter-spacing: 4px;
         }
 
-        .overlay p {
-            font-size: 1.05rem;
-            color: #88ccbb;
+        .overlay p { font-size: 0.95rem; color: #88ccbb; }
+
+        .dashboard-box {
+            background: rgba(10, 18, 30, 0.8);
+            border: 1px solid #00ffcc44;
+            padding: 15px 25px;
+            border-radius: 6px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
         }
 
-        .config-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
+        .dashboard-box h3 { color: #fff; margin-bottom: 8px; letter-spacing: 1px; }
+
+        .leaderboard-table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+            font-size: 0.85rem;
         }
 
-        .config-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
+        .leaderboard-table th, .leaderboard-table td {
+            border: 1px solid #00ffcc33;
+            padding: 6px;
+            text-align: center;
         }
+
+        .leaderboard-table th { background: rgba(0, 255, 204, 0.1); color: #00ffcc; }
+
+        .config-grid { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+        .config-row { display: flex; gap: 10px; align-items: center; }
 
         .mode-chip, .cat-chip {
-            padding: 8px 16px;
+            padding: 6px 14px;
             background: #091220;
             border: 1px solid #00ffcc44;
             color: #77bbaa;
             cursor: pointer;
             border-radius: 4px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: all 0.2s;
         }
 
@@ -256,131 +235,146 @@
         }
 
         .arcade-btn {
-            padding: 12px 35px;
+            padding: 10px 30px;
             background: transparent;
             border: 2px solid #00ffcc;
             color: #00ffcc;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             letter-spacing: 2px;
             border-radius: 4px;
             transition: all 0.2s;
             box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
-        .arcade-btn:hover {
-            background: #00ffcc;
-            color: #030508;
-            box-shadow: 0 0 25px #00ffcc;
-        }
+        .arcade-btn:hover { background: #00ffcc; color: #030508; box-shadow: 0 0 25px #00ffcc; }
+        .hidden { display: none !important; }
 
-        .hidden {
-            display: none !important;
+        .event-banner {
+            background: rgba(255, 170, 0, 0.15);
+            border: 1px solid #ffaa00;
+            color: #ffcc55;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(255, 170, 0, 0.2);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">TYPEBLITZ // SUPREME</div>
+        <div class="logo">TYPEBLITZ // EVO</div>
         <div class="stats-container">
+            <div class="stat">Stage: <span id="stage-display">1</span></div>
             <div class="stat">Score: <span id="score-display">0</span></div>
             <div class="stat">Combo: <span id="combo-display">1x</span></div>
             <div class="stat">Lives: <span id="shields-display">3</span></div>
             <div class="stat">WPM: <span id="wpm-display">0</span></div>
-            <div class="stat">Accuracy: <span id="acc-display">100%</span></div>
         </div>
     </header>
 
     <div id="game-container">
-        <!-- Toast Notification -->
-        <div id="achievement-toast">Achievement Unlocked!</div>
+        <div id="achievement-toast">Notification</div>
 
-        <!-- Start Screen / Config Overlay -->
+        <!-- Start Screen / Profile & Leaderboard Dashboard -->
         <div id="start-screen" class="overlay">
-            <h1>TYPEBLITZ SUPREME</h1>
-            <p>Configure parameters and launch simulation</p>
+            <h1>TYPEBLITZ EVO</h1>
             
+            <div id="active-event-banner" class="event-banner">Weekly Event: Turbo Velocity Active!</div>
+
+            <div class="dashboard-box">
+                <h3>PILOT PROFILE // <span id="profile-level-badge">LVL 1</span></h3>
+                <p>Total XP: <span id="profile-xp">0</span> | Best Score: <span id="profile-best">0</span></p>
+            </div>
+
             <div class="config-grid">
-                <p>Game Mode:</p>
+                <p>Select Mode:</p>
                 <div class="config-row" id="mode-selector">
-                    <div class="mode-chip active" data-mode="arcade">Arcade</div>
+                    <div class="mode-chip active" data-mode="arcade">Arcade Progression</div>
                     <div class="mode-chip" data-mode="timeattack">Time Attack (60s)</div>
                     <div class="mode-chip" data-mode="survival">Survival (1 Life)</div>
                 </div>
 
                 <p>Vocabulary Bank:</p>
                 <div class="config-row" id="category-selector">
-                    <div class="cat-chip active" data-cat="coding">Coding & Tech</div>
+                    <div class="cat-chip active" data-cat="tech">Advanced Tech</div>
                     <div class="cat-chip" data-cat="scifi">Sci-Fi Universe</div>
-                    <div class="cat-chip" data-cat="common">Speed Common</div>
+                    <div class="cat-chip" data-cat="coding">Programming Syntax</div>
                 </div>
             </div>
 
-            <button class="arcade-btn" id="start-btn">INITIALIZE SYSTEM</button>
+            <div class="dashboard-box" style="padding: 10px;">
+                <h3>LOCAL LEADERBOARD TOP 3</h3>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr><th>Rank</th><th>Score</th><th>Stage</th></tr>
+                    </thead>
+                    <tbody id="leaderboard-rows">
+                        <tr><td colspan="3">No entries recorded yet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="arcade-btn" id="start-btn">LAUNCH SIMULATION</button>
         </div>
 
         <!-- Game Over Overlay -->
         <div id="gameover-screen" class="overlay hidden">
-            <h1>SYSTEM TERMINATED</h1>
-            <p>Final Score: <span id="final-score">0</span></p>
-            <p>Personal Best: <span id="high-score">0</span></p>
-            <p>Unlocked Badges: <span id="final-badges">None</span></p>
+            <h1>SIMULATION FAILED</h1>
+            <p>Final Score: <span id="final-score">0</span> | Stage Reached: <span id="final-stage">1</span></p>
+            <p>XP Gained: <span id="gained-xp">+0</span></p>
             <button class="arcade-btn" id="restart-btn">RE-BOOT SYSTEM</button>
         </div>
     </div>
 
     <footer>
-        <input type="text" id="input-box" placeholder="TYPE FALLING DATA PACKETS..." autocomplete="off" disabled>
-        <div class="instructions">Destroy targets fully. Red = Bomb (Clears Screen), Blue = Time Freeze, Purple = Boss.</div>
+        <input type="text" id="input-box" placeholder="TYPE FALLING PACKETS..." autocomplete="off" disabled>
+        <div class="instructions">Type full targets. Clear stages to progress. Red=Bomb, Blue=Freeze, Purple=Boss.</div>
     </footer>
 
     <script>
-        const dictionaries = {
-            coding: ["cyber", "matrix", "orbit", "quantum", "script", "terminal", "protocol", "firewall", "kernel", "syntax", "runtime", "binary", "packet", "router", "cloud", "buffer", "crypto", "server", "nodes", "gateway", "payload", "glitch", "vector", "stream", "logic", "array", "token", "hash"],
-            scifi: ["nebula", "galaxy", "starfighter", "hyperdrive", "plasma", "android", "cortex", "photon", "singularity", "void", "starlight", "reactor", "cruiser", "hologram", "pulsar", "quasar", "tachyon", "matrix", "beacon"],
-            common: ["action", "bridge", "castle", "danger", "energy", "forest", "garden", "harbor", "island", "jungle", "kingdom", "lantern", "magnet", "nebula", "palace", "rocket", "station", "temple", "valley", "window", "yellow", "zenith"]
+        // Massive Expanded Dictionaries (No Repetition Shuffle Engine)
+        const masterDictionaries = {
+            tech: ["algorithm", "bandwidth", "circuit", "database", "ethernet", "firewall", "gigabyte", "hardware", "interface", "javascript", "keyboard", "mainframe", "network", "optimizer", "processor", "quantum", "router", "software", "terminal", "ultrasound", "virtual", "wireless", "xenia", "yotabyte", "zero", "analytics", "blockchain", "compiler", "debugging", "encryption"],
+            scifi: ["andromeda", "battleship", "cortex", "dimension", "eclipse", "fusion", "galaxy", "hologram", "ionizer", "juggernaut", "krypton", "laserbeam", "meteorite", "nebula", "outpost", "photon", "quasar", "reactor", "singularity", "tachyon", "universe", "vortex", "wormhole", "xenon", "yoda", "zenith", "astro", "bounty", "cyber", "dreadnought"],
+            coding: ["asynchronous", "boolean", "constant", "dependency", "encapsulation", "framework", "generator", "inheritance", "JSON", "keyword", "lambda", "middleware", "namespace", "override", "polymorphism", "query", "recursion", "statement", "typescript", "undefined", "variable", "webpack", "xmlhttprequest", "yield", "closure", "destructuring", "export", "import", "promise", "syntax"]
         };
 
-        const bossWords = ["overlord_mainframe", "hyper_quantum_core", "sentinel_firewall_x"];
+        const bossWords = ["overlord_mainframe_core", "quantum_sentinel_prime", "hyper_gateway_guardian_x"];
 
-        let score = 0;
-        let combo = 1;
-        let consecutiveHits = 0;
-        let shields = 3;
-        let highScore = localStorage.getItem('typeblitz_sup_high') || 0;
-        let gameActive = false;
-        let currentMode = 'arcade';
-        let currentCat = 'coding';
-        let targets = [];
-        let unlockedBadges = [];
+        // Profile & Persistent Data
+        let profile = JSON.parse(localStorage.getItem('typeblitz_profile')) || { xp: 0, level: 1, bestScore: 0, leaderboard: [] };
         
-        let spawnInterval = null;
-        let gameTimer = null;
-        let timeLeft = 60;
-        
-        let totalTypedChars = 0;
-        let correctTypedChars = 0;
-        let startTime = 0;
+        let score = 0, stage = 1, combo = 1, consecutiveHits = 0, shields = 3;
+        let gameActive = false, currentMode = 'arcade', currentCat = 'tech';
+        let targets = [], availableWords = [];
+        let spawnInterval = null, gameTimer = null, timeLeft = 60;
+        let totalTypedChars = 0, correctTypedChars = 0, startTime = 0;
 
-        const gameContainer = document.getElementById('game-container');
-        const inputBox = document.getElementById('input-box');
-        const scoreDisplay = document.getElementById('score-display');
-        const comboDisplay = document.getElementById('combo-display');
-        const shieldsDisplay = document.getElementById('shields-display');
-        const wpmDisplay = document.getElementById('wpm-display');
-        const accDisplay = document.getElementById('acc-display');
-        const startScreen = document.getElementById('start-screen');
-        const gameOverScreen = document.getElementById('gameover-screen');
-        const startBtn = document.getElementById('start-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const finalScoreEl = document.getElementById('final-score');
-        const highScoreEl = document.getElementById('high-score');
-        const finalBadgesEl = document.getElementById('final-badges');
-        const toastEl = document.getElementById('achievement-toast');
+        // Weekly Event Generator based on day-of-week seed
+        const events = ["Turbo Velocity (+Speed)", "Double XP Week", "Shield Bonus Week", "Standard Protocols"];
+        let activeEvent = events[Math.floor(Date.now() / (1000 * 60 * 60 * 24 * 7)) % events.length];
+        document.getElementById('active-event-banner').innerText = `Weekly Event Active: ${activeEvent}`;
 
+        function updateProfileUI() {
+            document.getElementById('profile-level-badge').innerText = `LVL ${profile.level}`;
+            document.getElementById('profile-xp').innerText = profile.xp;
+            document.getElementById('profile-best').innerText = profile.bestScore;
+
+            let lbTable = document.getElementById('leaderboard-rows');
+            if (profile.leaderboard.length > 0) {
+                lbTable.innerHTML = profile.leaderboard.slice(0, 3).map((entry, idx) => 
+                    `<tr><td>#${idx+1}</td><td>${entry.score}</td><td>Stage ${entry.stage}</td></tr>`
+                ).join('');
+            }
+        }
+        updateProfileUI();
+
+        // Mode and Category Selectors
         document.querySelectorAll('.mode-chip').forEach(chip => {
             chip.addEventListener('click', () => {
                 document.querySelectorAll('.mode-chip').forEach(c => c.classList.remove('active'));
@@ -397,8 +391,8 @@
             });
         });
 
-        startBtn.addEventListener('click', startGame);
-        restartBtn.addEventListener('click', startGame);
+        document.getElementById('start-btn').addEventListener('click', startGame);
+        document.getElementById('restart-btn').addEventListener('click', startGame);
 
         let audioCtx = null;
         function playTone(freq, type, duration) {
@@ -408,7 +402,7 @@
                 let gain = audioCtx.createGain();
                 osc.type = type;
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
@@ -418,74 +412,73 @@
         }
 
         function spawnParticles(x, y, color = '#00ffcc') {
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 8; i++) {
                 let p = document.createElement('div');
                 p.className = 'particle';
                 p.style.background = color;
-                p.style.boxShadow = `0 0 8px ${color}`;
                 p.style.left = `${x}px`;
                 p.style.top = `${y}px`;
-                gameContainer.appendChild(p);
+                document.getElementById('game-container').appendChild(p);
 
                 let angle = Math.random() * Math.PI * 2;
-                let speed = 2 + Math.random() * 4;
-                let vx = Math.cos(angle) * speed;
-                let vy = Math.sin(angle) * speed;
-                let opacity = 1;
+                let speed = 2 + Math.random() * 3;
+                let vx = Math.cos(angle) * speed, vy = Math.sin(angle) * speed, opacity = 1;
 
                 let anim = setInterval(() => {
-                    let curX = parseFloat(p.style.left);
-                    let curY = parseFloat(p.style.top);
-                    p.style.left = `${curX + vx}px`;
-                    p.style.top = `${curY + vy}px`;
-                    opacity -= 0.04;
+                    p.style.left = `${parseFloat(p.style.left) + vx}px`;
+                    p.style.top = `${parseFloat(p.style.top) + vy}px`;
+                    opacity -= 0.05;
                     p.style.opacity = opacity;
-                    if (opacity <= 0) {
-                        clearInterval(anim);
-                        p.remove();
-                    }
+                    if (opacity <= 0) { clearInterval(anim); p.remove(); }
                 }, 20);
             }
         }
 
-        function triggerAchievement(name) {
-            if (unlockedBadges.includes(name)) return;
-            unlockedBadges.push(name);
-            toastEl.innerText = `Badge Unlocked: ${name}!`;
-            toastEl.classList.add('show');
-            setTimeout(() => { toastEl.classList.remove('show'); }, 3000);
+        function refillWordPool() {
+            availableWords = [...masterDictionaries[currentCat]];
+            // Shuffle pool to guarantee no repetition until the pool exhausts
+            availableWords.sort(() => Math.random() - 0.5);
+        }
+
+        function getNextWord() {
+            if (availableWords.length === 0) refillWordPool();
+            return availableWords.pop();
         }
 
         function startGame() {
-            startScreen.classList.add('hidden');
-            gameOverScreen.classList.add('hidden');
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('gameover-screen').classList.add('hidden');
+            
+            let inputBox = document.getElementById('input-box');
             inputBox.disabled = false;
             inputBox.value = '';
             inputBox.focus();
 
             score = 0;
+            stage = 1;
             combo = 1;
             consecutiveHits = 0;
             shields = currentMode === 'survival' ? 1 : 3;
             targets.forEach(t => t.element.remove());
             targets = [];
-            unlockedBadges = [];
             gameActive = true;
             totalTypedChars = 0;
             correctTypedChars = 0;
             startTime = Date.now();
             timeLeft = 60;
 
+            refillWordPool();
             updateStats();
 
             clearInterval(spawnInterval);
-            let spawnRate = currentMode === 'timeattack' ? 1100 : 1600;
-            spawnInterval = setInterval(spawnTarget, spawnRate);
+            let rate = currentMode === 'timeattack' ? 1000 : 1500;
+            spawnInterval = setInterval(spawnTarget, rate);
 
             if (currentMode === 'timeattack') {
                 clearInterval(gameTimer);
                 gameTimer = setInterval(() => {
                     timeLeft--;
+                    document.getElementById('wpm-display').innerText = `${timeLeft}s`;
                     if (timeLeft <= 0) endGame();
                 }, 1000);
             }
@@ -494,46 +487,46 @@
         function spawnTarget() {
             if (!gameActive) return;
 
-            let wordList = dictionaries[currentCat];
-            let word = wordList[Math.floor(Math.random() * wordList.length)];
-            if (targets.some(t => t.word === word)) return;
+            let word = getNextWord();
+            if (targets.some(t => t.word === word)) word = getNextWord(); // Extra safeguard
 
             let type = 'normal';
             let rand = Math.random();
             if (rand < 0.10) type = 'bomb';
             else if (rand < 0.20) type = 'freeze';
-            else if (rand < 0.26 && score > 200) type = 'boss';
+            else if (rand < 0.25 && stage >= 2) type = 'boss';
 
-            if (type === 'boss') {
-                word = bossWords[Math.floor(Math.random() * bossWords.length)];
-            }
+            if (type === 'boss') word = bossWords[Math.floor(Math.random() * bossWords.length)];
 
             let el = document.createElement('div');
             el.className = `target ${type === 'bomb' ? 'special-bomb' : type === 'freeze' ? 'special-freeze' : type === 'boss' ? 'boss-word' : ''}`;
             el.innerText = word;
 
-            let maxX = gameContainer.clientWidth - 160;
+            let gameCont = document.getElementById('game-container');
+            let maxX = gameCont.clientWidth - 180;
             let x = Math.max(20, Math.random() * maxX);
             let y = -50;
 
             el.style.left = `${x}px`;
             el.style.top = `${y}px`;
-            gameContainer.appendChild(el);
+            gameCont.appendChild(el);
 
-            let baseSpeed = type === 'boss' ? 0.35 : (0.6 + Math.random() * 0.5);
-            let speed = baseSpeed * (1 + score / 600);
+            let speedMult = activeEvent.includes("Turbo") ? 1.3 : 1.0;
+            let baseSpeed = type === 'boss' ? 0.3 : (0.5 + Math.random() * 0.4);
+            let speed = baseSpeed * speedMult * (1 + (stage - 1) * 0.15);
 
             targets.push({ word, element: el, x, y, speed, type });
         }
 
-        function updateGame() {
+        function updateGameLoop() {
             if (gameActive) {
+                let gameCont = document.getElementById('game-container');
                 for (let i = targets.length - 1; i >= 0; i--) {
                     let t = targets[i];
                     t.y += t.speed;
                     t.element.style.top = `${t.y}px`;
 
-                    if (t.y > gameContainer.clientHeight - 55) {
+                    if (t.y > gameCont.clientHeight - 55) {
                         t.element.remove();
                         targets.splice(i, 1);
                         handleMiss();
@@ -541,41 +534,47 @@
                 }
                 updateMetrics();
             }
-            requestAnimationFrame(updateGame);
+            requestAnimationFrame(updateGameLoop);
         }
-        requestAnimationFrame(updateGame);
+        requestAnimationFrame(updateGameLoop);
 
         function handleMiss() {
             shields--;
             combo = 1;
             consecutiveHits = 0;
-            playTone(130, 'square', 0.2);
+            playTone(120, 'square', 0.2);
             updateStats();
             if (shields <= 0) endGame();
         }
 
         function updateStats() {
-            scoreDisplay.innerText = score;
-            comboDisplay.innerText = `${combo}x`;
-            shieldsDisplay.innerText = shields;
+            document.getElementById('stage-display').innerText = stage;
+            document.getElementById('score-display').innerText = score;
+            document.getElementById('combo-display').innerText = `${combo}x`;
+            document.getElementById('shields-display').innerText = shields;
         }
 
         function updateMetrics() {
             let elapsedMin = (Date.now() - startTime) / 60000;
-            if (elapsedMin > 0) {
+            if (elapsedMin > 0 && currentMode !== 'timeattack') {
                 let wpm = Math.round((correctTypedChars / 5) / elapsedMin);
-                wpmDisplay.innerText = currentMode === 'timeattack' ? `${timeLeft}s` : wpm;
-                let accuracy = totalTypedChars > 0 ? Math.round((correctTypedChars / totalTypedChars) * 100) : 100;
-                accDisplay.innerText = `${accuracy}%`;
+                document.getElementById('wpm-display').innerText = wpm;
+            }
 
-                if (score >= 250) triggerAchievement("Data Novice");
-                if (score >= 600) triggerAchievement("Cyber Master");
-                if (wpm >= 80 && elapsedMin > 0.2) triggerAchievement("Speed Demon");
+            // Stage Progression Thresholds
+            if (score >= stage * 250) {
+                stage++;
+                playTone(800, 'sine', 0.4);
+                let toast = document.getElementById('achievement-toast');
+                toast.innerText = `Stage Up! Welcome to Stage ${stage}`;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
             }
         }
 
-        inputBox.addEventListener('input', () => {
+        document.getElementById('input-box').addEventListener('input', () => {
             if (!gameActive) return;
+            let inputBox = document.getElementById('input-box');
             let typedVal = inputBox.value.trim().toLowerCase();
             totalTypedChars++;
 
@@ -588,31 +587,27 @@
                 matchedTarget.element.innerHTML = `<span class="matched">${matchedPart}</span>${remainingPart}`;
 
                 if (typedVal === matchedTarget.word) {
-                    playTone(550, 'sine', 0.1);
+                    playTone(600, 'sine', 0.1);
                     consecutiveHits++;
-                    
-                    if (consecutiveHits >= 5 && combo < 2) { combo = 2; triggerAchievement("Combo x2"); }
-                    if (consecutiveHits >= 10 && combo < 3) { combo = 3; triggerAchievement("Combo x3"); }
-                    if (consecutiveHits >= 20 && combo < 5) { combo = 5; triggerAchievement("Unstoppable"); }
+                    if (consecutiveHits >= 5 && combo < 3) combo = 3;
+                    if (consecutiveHits >= 12 && combo < 5) combo = 5;
 
                     score += Math.round(matchedTarget.word.length * 10 * combo);
 
                     let rect = matchedTarget.element.getBoundingClientRect();
-                    let cRect = gameContainer.getBoundingClientRect();
-                    spawnParticles(rect.left - cRect.left + 30, rect.top - cRect.top + 15, matchedTarget.type === 'boss' ? '#ff00ff' : '#00ffcc');
+                    let cRect = document.getElementById('game-container').getBoundingClientRect();
+                    spawnParticles(rect.left - cRect.left + 30, rect.top - cRect.top + 15);
 
                     if (matchedTarget.type === 'bomb') {
-                        playTone(100, 'sawtooth', 0.4);
-                        score += targets.length * 25;
+                        playTone(90, 'sawtooth', 0.4);
+                        score += targets.length * 30;
                         targets.forEach(t => t.element.remove());
                         targets = [];
-                        triggerAchievement("Bombastic");
                     } else if (matchedTarget.type === 'freeze') {
-                        playTone(700, 'sine', 0.3);
                         targets.forEach(t => {
                             let oldSpeed = t.speed;
                             t.speed = 0.2;
-                            setTimeout(() => { t.speed = oldSpeed; }, 3500);
+                            setTimeout(() => { t.speed = oldSpeed; }, 3000);
                         });
                     } else {
                         matchedTarget.element.remove();
@@ -633,17 +628,25 @@
             gameActive = false;
             clearInterval(spawnInterval);
             clearInterval(gameTimer);
-            inputBox.disabled = true;
+            document.getElementById('input-box').disabled = true;
 
-            if (score > highScore) {
-                highScore = score;
-                localStorage.setItem('typeblitz_sup_high', highScore);
-            }
+            let xpGained = Math.round(score / 5);
+            if (activeEvent.includes("XP")) xpGained *= 2;
+            profile.xp += xpGained;
+            profile.level = Math.floor(profile.xp / 1000) + 1;
 
-            finalScoreEl.innerText = score;
-            highScoreEl.innerText = highScore;
-            finalBadgesEl.innerText = unlockedBadges.length > 0 ? unlockedBadges.join(", ") : "None";
-            gameOverScreen.classList.remove('hidden');
+            if (score > profile.bestScore) profile.bestScore = score;
+
+            profile.leaderboard.push({ score, stage });
+            profile.leaderboard.sort((a, b) => b.score - a.score);
+            localStorage.setItem('typeblitz_profile', JSON.stringify(profile));
+
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('final-stage').innerText = stage;
+            document.getElementById('gained-xp').innerText = `+${xpGained} XP`;
+            updateProfileUI();
+
+            document.getElementById('gameover-screen').classList.remove('hidden');
         }
     </script>
 </body>
