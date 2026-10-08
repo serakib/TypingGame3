@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TypeBlitz v3.4 // Quantum Cyber</title>
+    <title>TypeBlitz v3.5 // Quantum Cyber</title>
     <style>
         * {
             box-sizing: border-box;
@@ -216,15 +216,15 @@
             padding: 15px 25px;
             border-radius: 12px;
             text-align: center;
-            max-width: 450px;
+            max-width: 480px;
             width: 100%;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
         }
 
-        .config-grid { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; max-width: 450px; }
+        .config-grid { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; max-width: 480px; }
         .config-row { display: flex; gap: 8px; align-items: center; justify-content: center; width: 100%; flex-wrap: wrap; }
 
-        .mode-chip, .cat-chip {
+        .mode-chip, .cat-chip, .sub-cat-chip {
             padding: 7px 14px;
             background: rgba(16, 22, 40, 0.8);
             border: 1px solid rgba(0, 255, 255, 0.3);
@@ -235,7 +235,7 @@
             transition: all 0.2s;
         }
 
-        .mode-chip.active, .cat-chip.active {
+        .mode-chip.active, .cat-chip.active, .sub-cat-chip.active {
             background: rgba(255, 0, 127, 0.2);
             border-color: #ff007f;
             color: #ffffff;
@@ -306,7 +306,7 @@
 <body>
 
     <header>
-        <div class="logo">TYPEBLITZ <span>// V3.4</span></div>
+        <div class="logo">TYPEBLITZ <span>// V3.5</span></div>
         <div class="nav-actions">
             <button class="nav-btn" id="nav-profile-btn">Profile</button>
             <button class="nav-btn" id="nav-leaderboard-btn">Leaderboard</button>
@@ -323,7 +323,7 @@
     <div id="game-container">
         <div id="achievement-toast">System Alert</div>
 
-        <!-- Profile Modal with Back Button -->
+        <!-- Profile Modal -->
         <div id="profile-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>PILOT PROFILE</h2>
@@ -335,7 +335,7 @@
             </div>
         </div>
 
-        <!-- Leaderboard Modal with Back Button -->
+        <!-- Leaderboard Modal -->
         <div id="leaderboard-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>GLOBAL LEADERBOARD</h2>
@@ -353,7 +353,7 @@
 
         <!-- Clean Home Screen -->
         <div id="start-screen" class="overlay">
-            <h1>TYPEBLITZ V3.4</h1>
+            <h1>TYPEBLITZ V3.5</h1>
             
             <div id="active-event-banner" class="event-banner">Weekly Event: Quantum Surge Active!</div>
 
@@ -368,16 +368,26 @@
                 <p style="color:#00ffff; font-size:0.8rem; letter-spacing:1px; margin-top:2px;">VOCABULARY STREAM:</p>
                 <div class="config-row" id="category-selector">
                     <div class="cat-chip active" data-cat="tech">Advanced Tech</div>
-                    <div class="cat-chip" data-cat="science">Science (Bio/Phys)</div>
+                    <div class="cat-chip" data-cat="science">Science</div>
                     <div class="cat-chip" data-cat="scifi">Quantum Sci-Fi</div>
                     <div class="cat-chip" data-cat="coding">Syntax & Code</div>
+                </div>
+
+                <!-- Sub-category selector for Science -->
+                <div id="science-sub-selector" class="config-row" style="margin-top: 4px;">
+                    <div class="sub-cat-chip active" data-subcat="all">All Science</div>
+                    <div class="sub-cat-chip" data-subcat="biology">Biology</div>
+                    <div class="sub-cat-chip" data-subcat="physics">Physics</div>
+                    <div class="sub-cat-chip" data-subcat="chemistry">Chemistry</div>
+                    <div class="sub-cat-chip" data-subcat="astronomy">Astronomy</div>
+                    <div class="sub-cat-chip" data-subcat="earth">Earth Science</div>
                 </div>
             </div>
 
             <button class="arcade-btn" id="start-btn" style="margin-top: 10px;">INITIALIZE SIMULATION</button>
         </div>
 
-        <!-- Game Over Modal with Back Button -->
+        <!-- Game Over Modal -->
         <div id="gameover-screen" class="overlay hidden">
             <h1 style="color:#ff3333; text-shadow:0 0 20px #ff3333;">SIMULATION TERMINATED</h1>
             <div class="glass-card">
@@ -397,19 +407,27 @@
     </footer>
 
     <script>
+        const scienceSubCategories = {
+            biology: ["photosynthesis", "mitochondria", "chromosome", "ecosystem", "osmosis", "catalyst", "molecule", "genetics", "organelle", "homeostasis", "enzyme", "neuron", "nucleus", "symbiosis", "cytoplasm", "respiration", "metabolism", "protein", "ribosome", "pathogen", "antibodies", "evolution", "biodiversity", "chloroplast", "dna"],
+            physics: ["thermodynamics", "momentum", "electromagnetism", "velocity", "gravitation", "relativity", "quantum", "entropy", "isotope", "quark", "electron", "proton", "wavelength", "frequency", "acceleration", "kinetic", "potential", "friction", "inertia", "superposition", "plasma", "radiation", "photon", "capacitor", "torque"],
+            chemistry: ["stoichiometry", "endothermic", "exothermic", "electronegativity", "polymerization", "catalysis", "titration", "hydrocarbon", "molarity", "enthalpy", "allotrope", "buffer", "valence", "oxidation", "reduction", "solution", "equilibrium", "precipitate", "spectroscopy", "isotope"],
+            astronomy: ["supernova", "singularity", "nebula", "pulsar", "quasar", "magnetar", "heliosphere", "astrometry", "parsec", "spectrograph", "bolide", "exoplanet", "accretion", "cosmology", "interstellar", "horizon", "redshift", "blazar", "starlight", "telescope"],
+            earth: ["tectonics", "stratigraphy", "lithosphere", "hydrological", "atmosphere", "stratosphere", "troposphere", "seismograph", "subduction", "magma", "metamorphic", "sedimentary", "phenomenon", "biosphere", "cryosphere", "orogeny", "paleontology", "geothermal", "aquifer", "weathering"]
+        };
+
         const masterDictionaries = {
             tech: ["algorithm", "bandwidth", "circuit", "database", "ethernet", "firewall", "gigabyte", "hardware", "interface", "javascript", "keyboard", "mainframe", "network", "optimizer", "processor", "quantum", "router", "software", "terminal", "ultrasound", "virtual", "wireless", "xenia", "yotabyte", "zero", "analytics", "blockchain", "compiler", "debugging", "encryption"],
-            science: ["photosynthesis", "mitochondria", "chromosome", "ecosystem", "osmosis", "thermodynamics", "momentum", "electromagnetism", "velocity", "catalyst", "molecule", "genetics", "organelle", "homeostasis", "gravitation", "relativity", "enzyme", "neuron", "nucleus", "symbiosis", "cytoplasm", "respiration", "metabolism", "entropy", "isotope", "quark", "electron", "proton", "wavelength", "frequency"],
+            science: [...scienceSubCategories.biology, ...scienceSubCategories.physics, ...scienceSubCategories.chemistry, ...scienceSubCategories.astronomy, ...scienceSubCategories.earth],
             scifi: ["andromeda", "battleship", "cortex", "dimension", "eclipse", "fusion", "galaxy", "hologram", "ionizer", "juggernaut", "krypton", "laserbeam", "meteorite", "nebula", "outpost", "photon", "quasar", "reactor", "singularity", "tachyon", "universe", "vortex", "wormhole", "xenon", "yoda", "zenith", "astro", "bounty", "cyber", "dreadnought"],
             coding: ["asynchronous", "boolean", "constant", "dependency", "encapsulation", "framework", "generator", "inheritance", "JSON", "keyword", "lambda", "middleware", "namespace", "override", "polymorphism", "query", "recursion", "statement", "typescript", "undefined", "variable", "webpack", "xmlhttprequest", "yield", "closure", "destructuring", "export", "import", "promise", "syntax"]
         };
 
         const bossWords = ["overlord_quantum_core", "sentinel_mainframe_prime", "hyper_gateway_guardian_x"];
 
-        let profile = JSON.parse(localStorage.getItem('typeblitz_v34_profile')) || { xp: 0, level: 1, bestScore: 0, leaderboard: [] };
+        let profile = JSON.parse(localStorage.getItem('typeblitz_v35_profile')) || { xp: 0, level: 1, bestScore: 0, leaderboard: [] };
         
         let score = 0, stage = 1, combo = 1, consecutiveHits = 0, shields = 3;
-        let gameActive = false, currentMode = 'arcade', currentCat = 'tech';
+        let gameActive = false, currentMode = 'arcade', currentCat = 'tech', currentSubCat = 'all';
         let targets = [], availableWords = [];
         let spawnInterval = null, gameTimer = null, timeLeft = 60;
         let totalTypedChars = 0, correctTypedChars = 0, startTime = 0;
@@ -468,11 +486,27 @@
             });
         });
 
+        const scienceSubSelectorEl = document.getElementById('science-sub-selector');
+
         document.querySelectorAll('.cat-chip').forEach(chip => {
             chip.addEventListener('click', () => {
                 document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
                 chip.classList.add('active');
                 currentCat = chip.dataset.cat;
+
+                if (currentCat === 'science') {
+                    scienceSubSelectorEl.classList.remove('hidden');
+                } else {
+                    scienceSubSelectorEl.classList.add('hidden');
+                }
+            });
+        });
+
+        document.querySelectorAll('.sub-cat-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.sub-cat-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentSubCat = chip.dataset.subcat;
             });
         });
 
@@ -521,7 +555,11 @@
         }
 
         function refillWordPool() {
-            availableWords = [...masterDictionaries[currentCat]];
+            if (currentCat === 'science' && currentSubCat !== 'all') {
+                availableWords = [...scienceSubCategories[currentSubCat]];
+            } else {
+                availableWords = [...masterDictionaries[currentCat]];
+            }
             availableWords.sort(() => Math.random() - 0.5);
         }
 
@@ -729,7 +767,7 @@
 
             profile.leaderboard.push({ score, stage });
             profile.leaderboard.sort((a, b) => b.score - a.score);
-            localStorage.setItem('typeblitz_v34_profile', JSON.stringify(profile));
+            localStorage.setItem('typeblitz_v35_profile', JSON.stringify(profile));
 
             document.getElementById('final-score').innerText = score;
             document.getElementById('final-stage').innerText = stage;
