@@ -2,21 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TypeBlitz v3.5 // Quantum Cyber</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TypeBlitz v3.6 // Quantum Cyber</title>
     <style>
+        :root {
+            --accent-color: #ff007f;
+            --accent-glow: rgba(255, 0, 127, 0.4);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             user-select: none;
+            -webkit-user-select: none;
         }
 
         body {
             background-color: #070913;
-            color: #ff007f;
+            color: var(--accent-color);
             height: 100vh;
+            height: 100dvh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -29,8 +36,8 @@
             position: absolute;
             width: 200%; height: 200%;
             top: -50%; left: -50%;
-            background-image: linear-gradient(rgba(255, 0, 127, 0.03) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255, 0, 127, 0.03) 1px, transparent 1px);
+            background-image: linear-gradient(var(--accent-glow) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--accent-glow) 1px, transparent 1px);
             background-size: 40px 40px;
             z-index: 0;
             pointer-events: none;
@@ -40,27 +47,29 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 30px;
-            background: rgba(12, 16, 30, 0.9);
-            border-bottom: 2px solid rgba(255, 0, 127, 0.3);
+            padding: 10px 15px;
+            background: rgba(12, 16, 30, 0.95);
+            border-bottom: 2px solid var(--accent-glow);
             backdrop-filter: blur(10px);
             z-index: 10;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .logo {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 800;
             letter-spacing: 2px;
             color: #fff;
-            text-shadow: 0 0 10px #ff007f;
+            text-shadow: 0 0 10px var(--accent-color);
         }
 
-        .logo span { color: #ff007f; }
+        .logo span { color: var(--accent-color); }
 
         .nav-actions {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             align-items: center;
         }
 
@@ -68,9 +77,9 @@
             background: rgba(16, 22, 40, 0.8);
             border: 1px solid rgba(0, 255, 255, 0.4);
             color: #00ffff;
-            padding: 6px 14px;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             cursor: pointer;
             letter-spacing: 1px;
             transition: all 0.2s;
@@ -83,11 +92,13 @@
 
         .stats-container {
             display: flex;
-            gap: 20px;
-            font-size: 0.85rem;
+            gap: 12px;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #a0a8c0;
+            width: 100%;
+            justify-content: center;
         }
 
         .stat span {
@@ -107,22 +118,22 @@
             position: absolute;
             width: 5px;
             height: 5px;
-            background: #ff007f;
+            background: var(--accent-color);
             border-radius: 50%;
             pointer-events: none;
-            box-shadow: 0 0 10px #ff007f;
+            box-shadow: 0 0 10px var(--accent-color);
             z-index: 5;
         }
 
         .target {
             position: absolute;
-            padding: 8px 16px;
-            background: rgba(15, 22, 40, 0.85);
+            padding: 6px 12px;
+            background: rgba(15, 22, 40, 0.9);
             border: 1px solid rgba(0, 255, 255, 0.4);
-            border-radius: 8px;
+            border-radius: 6px;
             color: #ffffff;
-            font-size: 1.15rem;
-            letter-spacing: 2px;
+            font-size: 1rem;
+            letter-spacing: 1.5px;
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
             white-space: nowrap;
             z-index: 4;
@@ -131,7 +142,7 @@
 
         .target.special-bomb { background: rgba(45, 10, 20, 0.9); border-color: #ff3333; box-shadow: 0 0 20px #ff3333; color: #ffcccc; }
         .target.special-freeze { background: rgba(10, 30, 45, 0.9); border-color: #00ffff; box-shadow: 0 0 20px #00ffff; color: #cce6ff; }
-        .target.boss-word { background: rgba(40, 10, 40, 0.9); border: 2px dashed #ff00ff; box-shadow: 0 0 25px #ff00ff; font-size: 1.3rem; color: #ffccff; }
+        .target.boss-word { background: rgba(40, 10, 40, 0.9); border: 2px dashed #ff00ff; box-shadow: 0 0 25px #ff00ff; font-size: 1.15rem; color: #ffccff; }
 
         .target .matched { color: #00ffff; text-shadow: 0 0 10px #00ffff; font-weight: bold; }
         .target.special-bomb .matched { color: #ff3333; text-shadow: 0 0 10px #ff3333; }
@@ -139,126 +150,130 @@
 
         #achievement-toast {
             position: absolute;
-            top: 20px;
+            top: 15px;
             right: -350px;
-            background: linear-gradient(135deg, #ff007f, #7f00ff);
+            background: linear-gradient(135deg, var(--accent-color), #7f00ff);
             color: #ffffff;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 8px;
             font-weight: bold;
-            box-shadow: 0 0 25px rgba(255, 0, 127, 0.5);
+            box-shadow: 0 0 25px var(--accent-glow);
             transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 100;
+            font-size: 0.85rem;
         }
-        #achievement-toast.show { right: 20px; }
+        #achievement-toast.show { right: 15px; }
 
         footer {
-            padding: 20px 30px;
+            padding: 15px 20px;
             background: rgba(12, 16, 30, 0.95);
-            border-top: 2px solid rgba(255, 0, 127, 0.3);
+            border-top: 2px solid var(--accent-glow);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             z-index: 10;
             backdrop-filter: blur(10px);
         }
 
         #input-box {
             width: 100%;
-            max-width: 700px;
-            padding: 16px 24px;
+            max-width: 600px;
+            padding: 12px 18px;
             background: #070913;
             border: 2px solid rgba(0, 255, 255, 0.4);
-            border-radius: 10px;
+            border-radius: 8px;
             color: #00ffff;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             text-align: center;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             outline: none;
             box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.15);
             transition: all 0.3s;
         }
 
         #input-box:focus {
-            border-color: #ff007f;
-            box-shadow: 0 0 25px rgba(255, 0, 127, 0.4), inset 0 0 15px rgba(255, 0, 127, 0.2);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 25px var(--accent-glow), inset 0 0 15px var(--accent-glow);
         }
 
-        .instructions { font-size: 0.8rem; color: #707c9c; letter-spacing: 1px; }
+        .instructions { font-size: 0.7rem; color: #707c9c; letter-spacing: 0.5px; text-align: center; }
 
         .overlay {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(7, 9, 19, 0.96);
+            background: rgba(7, 9, 19, 0.97);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            gap: 15px;
+            gap: 12px;
             overflow-y: auto;
-            padding: 30px;
+            padding: 20px;
             backdrop-filter: blur(15px);
         }
 
         .overlay h1 {
-            font-size: 2.8rem;
+            font-size: 2.2rem;
             color: #ffffff;
-            text-shadow: 0 0 20px #ff007f, 0 0 40px rgba(255,0,127,0.5);
-            letter-spacing: 5px;
+            text-shadow: 0 0 15px var(--accent-color), 0 0 30px var(--accent-glow);
+            letter-spacing: 3px;
+            text-align: center;
         }
 
         .glass-card {
-            background: rgba(16, 22, 40, 0.7);
-            border: 1px solid rgba(255, 0, 127, 0.25);
-            padding: 15px 25px;
-            border-radius: 12px;
+            background: rgba(16, 22, 40, 0.75);
+            border: 1px solid var(--accent-glow);
+            padding: 12px 20px;
+            border-radius: 10px;
             text-align: center;
-            max-width: 480px;
+            max-width: 450px;
             width: 100%;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
         }
 
-        .config-grid { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; max-width: 480px; }
-        .config-row { display: flex; gap: 8px; align-items: center; justify-content: center; width: 100%; flex-wrap: wrap; }
+        .config-grid { display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; max-width: 450px; }
+        .config-row { display: flex; gap: 6px; align-items: center; justify-content: center; width: 100%; flex-wrap: wrap; }
 
-        .mode-chip, .cat-chip, .sub-cat-chip {
-            padding: 7px 14px;
+        .mode-chip, .cat-chip, .sub-cat-chip, .color-chip {
+            padding: 6px 12px;
             background: rgba(16, 22, 40, 0.8);
             border: 1px solid rgba(0, 255, 255, 0.3);
             color: #a0a8c0;
             cursor: pointer;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: all 0.2s;
         }
 
         .mode-chip.active, .cat-chip.active, .sub-cat-chip.active {
-            background: rgba(255, 0, 127, 0.2);
-            border-color: #ff007f;
+            background: var(--accent-glow);
+            border-color: var(--accent-color);
             color: #ffffff;
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+            box-shadow: 0 0 12px var(--accent-glow);
         }
 
+        .color-chip { width: 28px; height: 28px; padding: 0; border-radius: 50%; display: inline-block; border: 2px solid #fff; }
+
         .arcade-btn {
-            padding: 12px 35px;
-            background: linear-gradient(135deg, #ff007f, #7f00ff);
+            padding: 10px 30px;
+            background: linear-gradient(135deg, var(--accent-color), #7f00ff);
             border: none;
             color: #ffffff;
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             letter-spacing: 2px;
             border-radius: 8px;
             transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
 
         .arcade-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(255, 0, 127, 0.7);
+            box-shadow: 0 0 30px var(--accent-glow);
         }
 
         .hidden { display: none !important; }
@@ -267,9 +282,9 @@
             background: linear-gradient(90deg, rgba(255,170,0,0.1), rgba(255,170,0,0.25), rgba(255,170,0,0.1));
             border: 1px solid #ffaa00;
             color: #ffcc55;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
             letter-spacing: 1px;
             text-align: center;
         }
@@ -283,33 +298,35 @@
             align-items: center;
             z-index: 200;
             backdrop-filter: blur(8px);
+            padding: 15px;
         }
         .modal-content {
             background: #0e1424;
-            border: 1px solid rgba(255, 0, 127, 0.4);
-            padding: 25px;
+            border: 1px solid var(--accent-glow);
+            padding: 20px;
             border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
+            width: 100%;
+            max-width: 380px;
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             text-align: center;
         }
-        .modal-content h2 { color: #fff; font-size: 1.1rem; letter-spacing: 1px; border-bottom: 1px solid rgba(255,0,127,0.3); padding-bottom: 6px; }
-        .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 5px; }
-        .leaderboard-table th, .leaderboard-table td { border: 1px solid rgba(255, 0, 127, 0.2); padding: 6px; text-align: center; color: #d0d8e8; }
-        .leaderboard-table th { background: rgba(255, 0, 127, 0.15); color: #ff007f; }
+        .modal-content h2 { color: #fff; font-size: 1.05rem; letter-spacing: 1px; border-bottom: 1px solid var(--accent-glow); padding-bottom: 6px; }
+        .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 5px; }
+        .leaderboard-table th, .leaderboard-table td { border: 1px solid rgba(255, 0, 127, 0.2); padding: 5px; text-align: center; color: #d0d8e8; }
+        .leaderboard-table th { background: var(--accent-glow); color: var(--accent-color); }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">TYPEBLITZ <span>// V3.5</span></div>
+        <div class="logo">TYPEBLITZ <span>// V3.6</span></div>
         <div class="nav-actions">
             <button class="nav-btn" id="nav-profile-btn">Profile</button>
             <button class="nav-btn" id="nav-leaderboard-btn">Leaderboard</button>
+            <button class="nav-btn" id="nav-settings-btn">Settings</button>
         </div>
         <div class="stats-container hidden" id="hud-stats">
             <div>Stage: <span id="stage-display">1</span></div>
@@ -327,10 +344,10 @@
         <div id="profile-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>PILOT PROFILE</h2>
-                <p style="color:#a0a8c0; font-size: 0.85rem;">Rank Tier: <span id="modal-rank-tier" style="color:#00ffff; font-weight:bold;">Cyber Cadet</span></p>
-                <p style="color:#a0a8c0; font-size: 0.85rem;">Level: <span id="modal-level" style="color:#fff;">1</span></p>
-                <p style="color:#a0a8c0; font-size: 0.85rem;">Total XP: <span id="modal-xp" style="color:#ffaa00;">0</span></p>
-                <p style="color:#a0a8c0; font-size: 0.85rem;">Record Best: <span id="modal-best" style="color:#00ffff;">0</span></p>
+                <p style="color:#a0a8c0; font-size: 0.8rem;">Rank Tier: <span id="modal-rank-tier" style="color:#00ffff; font-weight:bold;">Cyber Cadet</span></p>
+                <p style="color:#a0a8c0; font-size: 0.8rem;">Level: <span id="modal-level" style="color:#fff;">1</span></p>
+                <p style="color:#a0a8c0; font-size: 0.8rem;">Total XP: <span id="modal-xp" style="color:#ffaa00;">0</span></p>
+                <p style="color:#a0a8c0; font-size: 0.8rem;">Record Best: <span id="modal-best" style="color:#00ffff;">0</span></p>
                 <button class="nav-btn" id="close-profile-btn" style="margin-top:5px;">BACK</button>
             </div>
         </div>
@@ -351,21 +368,37 @@
             </div>
         </div>
 
+        <!-- Settings Modal (Color Theme Picker) -->
+        <div id="settings-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h2>THEME COLOR SETTINGS</h2>
+                <p style="color:#a0a8c0; font-size: 0.8rem;">Select UI Accent Color:</p>
+                <div class="config-row" style="margin: 10px 0;">
+                    <div class="color-chip" data-color="#ff007f" style="background:#ff007f;" title="Cyber Pink"></div>
+                    <div class="color-chip" data-color="#ff7700" style="background:#ff7700;" title="Neon Orange"></div>
+                    <div class="color-chip" data-color="#00ffcc" style="background:#00ffcc;" title="Laser Cyan"></div>
+                    <div class="color-chip" data-color="#33cc33" style="background:#33cc33;" title="Matrix Green"></div>
+                    <div class="color-chip" data-color="#aa00ff" style="background:#aa00ff;" title="Quantum Purple"></div>
+                </div>
+                <button class="nav-btn" id="close-settings-btn" style="margin-top:5px;">BACK</button>
+            </div>
+        </div>
+
         <!-- Clean Home Screen -->
         <div id="start-screen" class="overlay">
-            <h1>TYPEBLITZ V3.5</h1>
+            <h1>TYPEBLITZ V3.6</h1>
             
             <div id="active-event-banner" class="event-banner">Weekly Event: Quantum Surge Active!</div>
 
             <div class="config-grid">
-                <p style="color:#00ffff; font-size:0.8rem; letter-spacing:1px;">SELECT GAME MODE:</p>
+                <p style="color:#00ffff; font-size:0.75rem; letter-spacing:1px;">SELECT GAME MODE:</p>
                 <div class="config-row" id="mode-selector">
                     <div class="mode-chip active" data-mode="arcade">Arcade Progression</div>
                     <div class="mode-chip" data-mode="timeattack">Time Attack (60s)</div>
                     <div class="mode-chip" data-mode="survival">Survival (1 Life)</div>
                 </div>
 
-                <p style="color:#00ffff; font-size:0.8rem; letter-spacing:1px; margin-top:2px;">VOCABULARY STREAM:</p>
+                <p style="color:#00ffff; font-size:0.75rem; letter-spacing:1px; margin-top:2px;">VOCABULARY STREAM:</p>
                 <div class="config-row" id="category-selector">
                     <div class="cat-chip active" data-cat="tech">Advanced Tech</div>
                     <div class="cat-chip" data-cat="science">Science</div>
@@ -374,7 +407,7 @@
                 </div>
 
                 <!-- Sub-category selector for Science -->
-                <div id="science-sub-selector" class="config-row" style="margin-top: 4px;">
+                <div id="science-sub-selector" class="config-row hidden" style="margin-top: 4px;">
                     <div class="sub-cat-chip active" data-subcat="all">All Science</div>
                     <div class="sub-cat-chip" data-subcat="biology">Biology</div>
                     <div class="sub-cat-chip" data-subcat="physics">Physics</div>
@@ -391,8 +424,8 @@
         <div id="gameover-screen" class="overlay hidden">
             <h1 style="color:#ff3333; text-shadow:0 0 20px #ff3333;">SIMULATION TERMINATED</h1>
             <div class="glass-card">
-                <p style="font-size:1.05rem; color:#fff; margin-bottom:6px;">Final Score: <span id="final-score" style="color:#00ffff;">0</span></p>
-                <p style="font-size:0.9rem; color:#a0a8c0;">Stage Reached: <span id="final-stage" style="color:#ff007f;">1</span> | XP Gained: <span id="gained-xp" style="color:#ffaa00;">+0 XP</span></p>
+                <p style="font-size:1rem; color:#fff; margin-bottom:5px;">Final Score: <span id="final-score" style="color:#00ffff;">0</span></p>
+                <p style="font-size:0.85rem; color:#a0a8c0;">Stage Reached: <span id="final-stage" style="color:var(--accent-color);">1</span> | XP Gained: <span id="gained-xp" style="color:#ffaa00;">+0 XP</span></p>
             </div>
             <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: center;">
                 <button class="arcade-btn" id="restart-btn">RE-BOOT</button>
@@ -402,17 +435,17 @@
     </div>
 
     <footer>
-        <input type="text" id="input-box" placeholder="TYPE FALLING QUANTUM PACKETS..." autocomplete="off" disabled>
+        <input type="text" id="input-box" placeholder="TYPE FALLING QUANTUM PACKETS..." autocomplete="off" autocapitalize="none" spellcheck="false" disabled>
         <div class="instructions">Type targets fully to clear. Red = Bomb (Screen Clear), Blue = Freeze Time, Purple = Boss.</div>
     </footer>
 
     <script>
         const scienceSubCategories = {
-            biology: ["photosynthesis", "mitochondria", "chromosome", "ecosystem", "osmosis", "catalyst", "molecule", "genetics", "organelle", "homeostasis", "enzyme", "neuron", "nucleus", "symbiosis", "cytoplasm", "respiration", "metabolism", "protein", "ribosome", "pathogen", "antibodies", "evolution", "biodiversity", "chloroplast", "dna"],
-            physics: ["thermodynamics", "momentum", "electromagnetism", "velocity", "gravitation", "relativity", "quantum", "entropy", "isotope", "quark", "electron", "proton", "wavelength", "frequency", "acceleration", "kinetic", "potential", "friction", "inertia", "superposition", "plasma", "radiation", "photon", "capacitor", "torque"],
-            chemistry: ["stoichiometry", "endothermic", "exothermic", "electronegativity", "polymerization", "catalysis", "titration", "hydrocarbon", "molarity", "enthalpy", "allotrope", "buffer", "valence", "oxidation", "reduction", "solution", "equilibrium", "precipitate", "spectroscopy", "isotope"],
-            astronomy: ["supernova", "singularity", "nebula", "pulsar", "quasar", "magnetar", "heliosphere", "astrometry", "parsec", "spectrograph", "bolide", "exoplanet", "accretion", "cosmology", "interstellar", "horizon", "redshift", "blazar", "starlight", "telescope"],
-            earth: ["tectonics", "stratigraphy", "lithosphere", "hydrological", "atmosphere", "stratosphere", "troposphere", "seismograph", "subduction", "magma", "metamorphic", "sedimentary", "phenomenon", "biosphere", "cryosphere", "orogeny", "paleontology", "geothermal", "aquifer", "weathering"]
+            biology: ["photosynthesis", "mitochondria", "chromosome", "ecosystem", "osmosis", "catalyst", "molecule", "genetics", "organelle", "homeostasis", "enzyme", "neuron", "nucleus", "symbiosis", "cytoplasm", "respiration", "metabolism", "protein", "ribosome", "pathogen", "antibodies", "evolution", "biodiversity", "chloroplast", "dna", "homeostasis", "phagocyte", "endoplasmic", "eukaryote", "prokaryote"],
+            physics: ["thermodynamics", "momentum", "electromagnetism", "velocity", "gravitation", "relativity", "quantum", "entropy", "isotope", "quark", "electron", "proton", "wavelength", "frequency", "acceleration", "kinetic", "potential", "friction", "inertia", "superposition", "plasma", "radiation", "photon", "capacitor", "torque", "superconductor", "oscillation", "relativity", "spectrometry", "vector"],
+            chemistry: ["stoichiometry", "endothermic", "exothermic", "electronegativity", "polymerization", "catalysis", "titration", "hydrocarbon", "molarity", "enthalpy", "allotrope", "buffer", "valence", "oxidation", "reduction", "solution", "equilibrium", "precipitate", "spectroscopy", "isotope", "alkane", "catalyst", "combustion", "electrolysis", "isomer"],
+            astronomy: ["supernova", "singularity", "nebula", "pulsar", "quasar", "magnetar", "heliosphere", "astrometry", "parsec", "spectrograph", "bolide", "exoplanet", "accretion", "cosmology", "interstellar", "horizon", "redshift", "blazar", "starlight", "telescope", "astrolabe", "chromosphere", "eclipse", "galaxy", "supercluster"],
+            earth: ["tectonics", "stratigraphy", "lithosphere", "hydrological", "atmosphere", "stratosphere", "troposphere", "seismograph", "subduction", "magma", "metamorphic", "sedimentary", "phenomenon", "biosphere", "cryosphere", "orogeny", "paleontology", "geothermal", "aquifer", "weathering", "epicenter", "faultline", "topography", "tsunami", "volcanology"]
         };
 
         const masterDictionaries = {
@@ -424,8 +457,17 @@
 
         const bossWords = ["overlord_quantum_core", "sentinel_mainframe_prime", "hyper_gateway_guardian_x"];
 
-        let profile = JSON.parse(localStorage.getItem('typeblitz_v35_profile')) || { xp: 0, level: 1, bestScore: 0, leaderboard: [] };
+        let profile = JSON.parse(localStorage.getItem('typeblitz_v36_profile')) || { xp: 0, level: 1, bestScore: 0, leaderboard: [], themeColor: '#ff007f' };
         
+        // Apply saved theme color
+        function applyTheme(color) {
+            document.documentElement.style.setProperty('--accent-color', color);
+            document.documentElement.style.setProperty('--accent-glow', color + '66');
+            profile.themeColor = color;
+            localStorage.setItem('typeblitz_v36_profile', JSON.stringify(profile));
+        }
+        applyTheme(profile.themeColor);
+
         let score = 0, stage = 1, combo = 1, consecutiveHits = 0, shields = 3;
         let gameActive = false, currentMode = 'arcade', currentCat = 'tech', currentSubCat = 'all';
         let targets = [], availableWords = [];
@@ -458,7 +500,7 @@
         }
         updateProfileUI();
 
-        // Navbar & Back Button Handlers
+        // Navbar & Modal Controls
         document.getElementById('nav-profile-btn').addEventListener('click', () => {
             document.getElementById('profile-modal').classList.remove('hidden');
         });
@@ -471,6 +513,19 @@
         });
         document.getElementById('close-leaderboard-btn').addEventListener('click', () => {
             document.getElementById('leaderboard-modal').classList.add('hidden');
+        });
+
+        document.getElementById('nav-settings-btn').addEventListener('click', () => {
+            document.getElementById('settings-modal').classList.remove('hidden');
+        });
+        document.getElementById('close-settings-btn').addEventListener('click', () => {
+            document.getElementById('settings-modal').classList.add('hidden');
+        });
+
+        document.querySelectorAll('.color-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                applyTheme(chip.dataset.color);
+            });
         });
 
         document.getElementById('back-to-menu-btn').addEventListener('click', () => {
@@ -530,8 +585,8 @@
             } catch(e) {}
         }
 
-        function spawnParticles(x, y, color = '#ff007f') {
-            for (let i = 0; i < 10; i++) {
+        function spawnParticles(x, y, color) {
+            for (let i = 0; i < 8; i++) {
                 let p = document.createElement('div');
                 p.className = 'particle';
                 p.style.background = color;
@@ -541,13 +596,13 @@
                 document.getElementById('game-container').appendChild(p);
 
                 let angle = Math.random() * Math.PI * 2;
-                let speed = 2 + Math.random() * 4;
+                let speed = 2 + Math.random() * 3;
                 let vx = Math.cos(angle) * speed, vy = Math.sin(angle) * speed, opacity = 1;
 
                 let anim = setInterval(() => {
                     p.style.left = `${parseFloat(p.style.left) + vx}px`;
                     p.style.top = `${parseFloat(p.style.top) + vy}px`;
-                    opacity -= 0.04;
+                    opacity -= 0.05;
                     p.style.opacity = opacity;
                     if (opacity <= 0) { clearInterval(anim); p.remove(); }
                 }, 20);
@@ -573,6 +628,7 @@
             document.getElementById('gameover-screen').classList.add('hidden');
             document.getElementById('profile-modal').classList.add('hidden');
             document.getElementById('leaderboard-modal').classList.add('hidden');
+            document.getElementById('settings-modal').classList.add('hidden');
             
             document.getElementById('hud-stats').classList.remove('hidden');
 
@@ -598,7 +654,7 @@
             updateStats();
 
             clearInterval(spawnInterval);
-            let rate = currentMode === 'timeattack' ? 1000 : 1500;
+            let rate = currentMode === 'timeattack' ? 1000 : 1400;
             spawnInterval = setInterval(spawnTarget, rate);
 
             if (currentMode === 'timeattack') {
@@ -630,17 +686,17 @@
             el.innerText = word;
 
             let gameCont = document.getElementById('game-container');
-            let maxX = gameCont.clientWidth - 180;
-            let x = Math.max(20, Math.random() * maxX);
-            let y = -50;
+            let maxX = Math.max(50, gameCont.clientWidth - 160);
+            let x = Math.max(10, Math.random() * maxX);
+            let y = -40;
 
             el.style.left = `${x}px`;
             el.style.top = `${y}px`;
             gameCont.appendChild(el);
 
             let speedMult = activeEvent.includes("Surge") ? 1.3 : 1.0;
-            let baseSpeed = type === 'boss' ? 0.3 : (0.5 + Math.random() * 0.4);
-            let speed = baseSpeed * speedMult * (1 + (stage - 1) * 0.15);
+            let baseSpeed = type === 'boss' ? 0.25 : (0.45 + Math.random() * 0.35);
+            let speed = baseSpeed * speedMult * (1 + (stage - 1) * 0.12);
 
             targets.push({ word, element: el, x, y, speed, type });
         }
@@ -653,7 +709,7 @@
                     t.y += t.speed;
                     t.element.style.top = `${t.y}px`;
 
-                    if (t.y > gameCont.clientHeight - 55) {
+                    if (t.y > gameCont.clientHeight - 45) {
                         t.element.remove();
                         targets.splice(i, 1);
                         handleMiss();
@@ -669,7 +725,7 @@
             shields--;
             combo = 1;
             consecutiveHits = 0;
-            playTone(110, 'square', 0.2);
+            playTone(100, 'square', 0.2);
             updateStats();
             if (shields <= 0) endGame();
         }
@@ -722,7 +778,7 @@
 
                     let rect = matchedTarget.element.getBoundingClientRect();
                     let cRect = document.getElementById('game-container').getBoundingClientRect();
-                    spawnParticles(rect.left - cRect.left + 30, rect.top - cRect.top + 15, matchedTarget.type === 'boss' ? '#ff00ff' : '#00ffff');
+                    spawnParticles(rect.left - cRect.left + 25, rect.top - cRect.top + 10, matchedTarget.type === 'boss' ? '#ff00ff' : '#00ffff');
 
                     if (matchedTarget.type === 'bomb') {
                         playTone(90, 'sawtooth', 0.4);
@@ -767,7 +823,7 @@
 
             profile.leaderboard.push({ score, stage });
             profile.leaderboard.sort((a, b) => b.score - a.score);
-            localStorage.setItem('typeblitz_v35_profile', JSON.stringify(profile));
+            localStorage.setItem('typeblitz_v36_profile', JSON.stringify(profile));
 
             document.getElementById('final-score').innerText = score;
             document.getElementById('final-stage').innerText = stage;
