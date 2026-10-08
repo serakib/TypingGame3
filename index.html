@@ -71,6 +71,7 @@
             display: flex;
             gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-btn {
@@ -83,11 +84,34 @@
             cursor: pointer;
             letter-spacing: 1px;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .nav-btn:hover {
             background: rgba(0, 255, 255, 0.15);
             box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+        }
+
+        .user-profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 22, 40, 0.9);
+            border: 1px solid var(--accent-color);
+            padding: 3px 10px 3px 4px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #fff;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .user-avatar-mini {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #00ffff;
         }
 
         .stats-container {
@@ -324,7 +348,13 @@
     <header>
         <div class="logo">Typing Game <span> V3.4</span></div>
         <div class="nav-actions">
-            <button class="nav-btn" id="nav-profile-btn">Profile</button>
+            <!-- Google Sign In / Profile Button Placeholder -->
+            <div id="auth-nav-container">
+                <button class="nav-btn" id="nav-profile-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" style="fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                    Google Login
+                </button>
+            </div>
             <button class="nav-btn" id="nav-leaderboard-btn">Leaderboard</button>
             <button class="nav-btn" id="nav-settings-btn">Settings</button>
         </div>
@@ -344,11 +374,14 @@
         <div id="profile-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>PILOT PROFILE</h2>
-                <p style="color:#a0a8c0; font-size: 0.8rem;">Rank Tier: <span id="modal-rank-tier" style="color:#00ffff; font-weight:bold;">Cyber Cadet</span></p>
-                <p style="color:#a0a8c0; font-size: 0.8rem;">Level: <span id="modal-level" style="color:#fff;">1</span></p>
-                <p style="color:#a0a8c0; font-size: 0.8rem;">Total XP: <span id="modal-xp" style="color:#ffaa00;">0</span></p>
-                <p style="color:#a0a8c0; font-size: 0.8rem;">Record Best: <span id="modal-best" style="color:#00ffff;">0</span></p>
-                <button class="nav-btn" id="close-profile-btn" style="margin-top:5px;">BACK</button>
+                <div id="profile-details-view">
+                    <p style="color:#a0a8c0; font-size: 0.8rem;">Rank Tier: <span id="modal-rank-tier" style="color:#00ffff; font-weight:bold;">Cyber Cadet</span></p>
+                    <p style="color:#a0a8c0; font-size: 0.8rem;">Level: <span id="modal-level" style="color:#fff;">1</span></p>
+                    <p style="color:#a0a8c0; font-size: 0.8rem;">Total XP: <span id="modal-xp" style="color:#ffaa00;">0</span></p>
+                    <p style="color:#a0a8c0; font-size: 0.8rem;">Record Best: <span id="modal-best" style="color:#00ffff;">0</span></p>
+                </div>
+                <button class="nav-btn" id="logout-btn" style="background:rgba(255,0,0,0.2); border-color:#ff3333; color:#ff9999; justify-content:center; margin-top:5px;">Logout Google Account</button>
+                <button class="nav-btn" id="close-profile-btn" style="margin-top:5px; justify-content:center;">BACK</button>
             </div>
         </div>
 
@@ -364,7 +397,7 @@
                         <tr><td colspan="3">No records found</td></tr>
                     </tbody>
                 </table>
-                <button class="nav-btn" id="close-leaderboard-btn" style="margin-top:5px;">BACK</button>
+                <button class="nav-btn" id="close-leaderboard-btn" style="margin-top:5px; justify-content:center;">BACK</button>
             </div>
         </div>
 
@@ -380,7 +413,7 @@
                     <div class="color-chip" data-color="#33cc33" style="background:#33cc33;" title="Matrix Green"></div>
                     <div class="color-chip" data-color="#aa00ff" style="background:#aa00ff;" title="Quantum Purple"></div>
                 </div>
-                <button class="nav-btn" id="close-settings-btn" style="margin-top:5px;">BACK</button>
+                <button class="nav-btn" id="close-settings-btn" style="margin-top:5px; justify-content:center;">BACK</button>
             </div>
         </div>
 
@@ -429,7 +462,7 @@
             </div>
             <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: center;">
                 <button class="arcade-btn" id="restart-btn">RE-BOOT</button>
-                <button class="nav-btn" id="back-to-menu-btn">BACK TO MENU</button>
+                <button class="nav-btn" id="back-to-menu-btn" style="justify-content:center;">BACK TO MENU</button>
             </div>
         </div>
     </div>
@@ -439,6 +472,95 @@
         <div class="instructions">Type targets fully to clear. Red = Bomb (Screen Clear), Blue = Freeze Time, Purple = Boss.</div>
     </footer>
 
+    <!-- Firebase SDK Modules -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            GoogleAuthProvider, 
+            signInWithPopup, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // ফায়ারবেস কনফিগারেশন
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWPpAhnn-OZokPwh5qFRU8McEvh7smlsQ",
+            authDomain: "medical-admission-pro.firebaseapp.com",
+            projectId: "medical-admission-pro",
+            storageBucket: "medical-admission-pro.firebasestorage.app",
+            messagingSenderId: "371132803062",
+            appId: "1:371132803062:web:f46520b234593d9e9009d7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const authNavContainer = document.getElementById('auth-nav-container');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // গুগল সাইন-ইন ট্রিগার
+        async function handleGoogleLogin() {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Google Login Error:", error.message);
+            }
+        }
+
+        // লগআউট হ্যান্ডলার
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                document.getElementById('profile-modal').classList.add('hidden');
+            } catch (error) {
+                console.error("Logout Error:", error);
+            }
+        });
+
+        // অথ স্টেট চেকার (UI আপডেট)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // লগইন করা থাকলে প্রোফাইল কার্ড দেখাবে
+                const displayName = user.displayName ? user.displayName.split(' ')[0] : "Player";
+                const photoURL = user.photoURL || "https://via.placeholder.com/24";
+                
+                authNavContainer.innerHTML = `
+                    <div class="user-profile-mini" id="nav-profile-btn" style="cursor:pointer;" title="Click to view profile">
+                        <img src="${photoURL}" class="user-avatar-mini" alt="Avatar">
+                        <span>${displayName}</span>
+                    </div>
+                `;
+                
+                // রি-অ্যাসাইন ইভেন্ট লিসেনার ফর প্রোফাইল ওপেন
+                document.getElementById('nav-profile-btn').addEventListener('click', () => {
+                    document.getElementById('profile-modal').classList.remove('hidden');
+                });
+                
+                window.currentUserId = user.uid;
+            } else {
+                // লগআউট থাকলে স্ট্যান্ডার্ড গুগল লগইন বাটন দেখাবে
+                authNavContainer.innerHTML = `
+                    <button class="nav-btn" id="google-login-trigger">
+                        <svg viewBox="0 0 24 24" width="14" height="14" style="fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                        Google Login
+                    </button>
+                `;
+                
+                document.getElementById('google-login-trigger').addEventListener('click', handleGoogleLogin);
+                
+                // প্রোফাইল বাটনে ক্লিক করলে লগইন করতে প্রম্পট করবে অথবা প্রোফাইল মডাল দেখাবে
+                document.getElementById('nav-profile-btn')?.addEventListener('click', () => {
+                    document.getElementById('profile-modal').classList.remove('hidden');
+                });
+
+                window.currentUserId = null;
+            }
+        });
+    </script>
+
+    <!-- Game Core Script -->
     <script>
         const scienceSubCategories = {
             biology: ["photosynthesis", "mitochondria", "chromosome", "ecosystem", "osmosis", "catalyst", "molecule", "genetics", "organelle", "homeostasis", "enzyme", "neuron", "nucleus", "symbiosis", "cytoplasm", "respiration", "metabolism", "protein", "ribosome", "pathogen", "antibodies", "evolution", "biodiversity", "chloroplast", "dna", "homeostasis", "phagocyte", "endoplasmic", "eukaryote", "prokaryote"],
@@ -459,7 +581,6 @@
 
         let profile = JSON.parse(localStorage.getItem('typeblitz_v36_profile')) || { xp: 0, level: 1, bestScore: 0, leaderboard: [], themeColor: '#ff007f' };
         
-        // Apply saved theme color
         function applyTheme(color) {
             document.documentElement.style.setProperty('--accent-color', color);
             document.documentElement.style.setProperty('--accent-glow', color + '66');
@@ -501,9 +622,6 @@
         updateProfileUI();
 
         // Navbar & Modal Controls
-        document.getElementById('nav-profile-btn').addEventListener('click', () => {
-            document.getElementById('profile-modal').classList.remove('hidden');
-        });
         document.getElementById('close-profile-btn').addEventListener('click', () => {
             document.getElementById('profile-modal').classList.add('hidden');
         });
