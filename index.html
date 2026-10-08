@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TypeBlitz v3.2 // Quantum Cyber</title>
+    <title>TypeBlitz v3.3 // Quantum Cyber</title>
     <style>
         * {
             box-sizing: border-box;
@@ -197,7 +197,7 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
-            gap: 20px;
+            gap: 15px;
             overflow-y: auto;
             padding: 30px;
             backdrop-filter: blur(15px);
@@ -213,25 +213,25 @@
         .glass-card {
             background: rgba(16, 22, 40, 0.7);
             border: 1px solid rgba(255, 0, 127, 0.25);
-            padding: 20px 30px;
+            padding: 15px 25px;
             border-radius: 12px;
             text-align: center;
-            max-width: 500px;
+            max-width: 450px;
             width: 100%;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
         }
 
-        .config-grid { display: flex; flex-direction: column; gap: 12px; align-items: center; width: 100%; max-width: 500px; }
-        .config-row { display: flex; gap: 10px; align-items: center; justify-content: center; width: 100%; flex-wrap: wrap; }
+        .config-grid { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; max-width: 450px; }
+        .config-row { display: flex; gap: 8px; align-items: center; justify-content: center; width: 100%; flex-wrap: wrap; }
 
         .mode-chip, .cat-chip {
-            padding: 8px 16px;
+            padding: 7px 14px;
             background: rgba(16, 22, 40, 0.8);
             border: 1px solid rgba(0, 255, 255, 0.3);
             color: #a0a8c0;
             cursor: pointer;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: all 0.2s;
         }
 
@@ -243,11 +243,11 @@
         }
 
         .arcade-btn {
-            padding: 14px 40px;
+            padding: 12px 35px;
             background: linear-gradient(135deg, #ff007f, #7f00ff);
             border: none;
             color: #ffffff;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: bold;
             cursor: pointer;
             letter-spacing: 2px;
@@ -267,14 +267,13 @@
             background: linear-gradient(90deg, rgba(255,170,0,0.1), rgba(255,170,0,0.25), rgba(255,170,0,0.1));
             border: 1px solid #ffaa00;
             color: #ffcc55;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             letter-spacing: 1px;
             text-align: center;
         }
 
-        /* Modal Overlays */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -291,28 +290,28 @@
             padding: 25px;
             border-radius: 12px;
             width: 90%;
-            max-width: 420px;
+            max-width: 400px;
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             text-align: center;
         }
-        .modal-content h2 { color: #fff; font-size: 1.2rem; letter-spacing: 1.5px; border-bottom: 1px solid rgba(255,0,127,0.3); padding-bottom: 8px; }
+        .modal-content h2 { color: #fff; font-size: 1.1rem; letter-spacing: 1px; border-bottom: 1px solid rgba(255,0,127,0.3); padding-bottom: 6px; }
         .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 5px; }
-        .leaderboard-table th, .leaderboard-table td { border: 1px solid rgba(255, 0, 127, 0.2); padding: 7px; text-align: center; color: #d0d8e8; }
+        .leaderboard-table th, .leaderboard-table td { border: 1px solid rgba(255, 0, 127, 0.2); padding: 6px; text-align: center; color: #d0d8e8; }
         .leaderboard-table th { background: rgba(255, 0, 127, 0.15); color: #ff007f; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">TYPEBLITZ <span>// V3.2</span></div>
+        <div class="logo">TYPEBLITZ <span>// V3.3</span></div>
         <div class="nav-actions">
             <button class="nav-btn" id="nav-profile-btn">Profile</button>
             <button class="nav-btn" id="nav-leaderboard-btn">Leaderboard</button>
         </div>
-        <div class="stats-container">
+        <div class="stats-container hidden" id="hud-stats">
             <div>Stage: <span id="stage-display">1</span></div>
             <div>Score: <span id="score-display">0</span></div>
             <div>Combo: <span id="combo-display">1x</span></div>
@@ -324,19 +323,19 @@
     <div id="game-container">
         <div id="achievement-toast">System Alert</div>
 
-        <!-- Profile Modal Popup -->
+        <!-- Profile Modal -->
         <div id="profile-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>PILOT PROFILE</h2>
-                <p style="color:#a0a8c0; font-size: 0.9rem;">Rank Tier: <span id="modal-rank-tier" style="color:#00ffff; font-weight:bold;">Cyber Cadet</span></p>
-                <p style="color:#a0a8c0; font-size: 0.9rem;">Level: <span id="modal-level" style="color:#fff;">1</span></p>
-                <p style="color:#a0a8c0; font-size: 0.9rem;">Total XP: <span id="modal-xp" style="color:#ffaa00;">0</span></p>
-                <p style="color:#a0a8c0; font-size: 0.9rem;">Personal Best Record: <span id="modal-best" style="color:#00ffff;">0</span></p>
-                <button class="nav-btn" id="close-profile-btn" style="margin-top:10px;">OK</button>
+                <p style="color:#a0a8c0; font-size: 0.85rem;">Rank Tier: <span id="modal-rank-tier" style="color:#00ffff; font-weight:bold;">Cyber Cadet</span></p>
+                <p style="color:#a0a8c0; font-size: 0.85rem;">Level: <span id="modal-level" style="color:#fff;">1</span></p>
+                <p style="color:#a0a8c0; font-size: 0.85rem;">Total XP: <span id="modal-xp" style="color:#ffaa00;">0</span></p>
+                <p style="color:#a0a8c0; font-size: 0.85rem;">Record Best: <span id="modal-best" style="color:#00ffff;">0</span></p>
+                <button class="nav-btn" id="close-profile-btn" style="margin-top:5px;">OK</button>
             </div>
         </div>
 
-        <!-- Leaderboard Modal Popup -->
+        <!-- Leaderboard Modal -->
         <div id="leaderboard-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>GLOBAL LEADERBOARD</h2>
@@ -348,25 +347,25 @@
                         <tr><td colspan="3">No records found</td></tr>
                     </tbody>
                 </table>
-                <button class="nav-btn" id="close-leaderboard-btn" style="margin-top:10px;">OK</button>
+                <button class="nav-btn" id="close-leaderboard-btn" style="margin-top:5px;">OK</button>
             </div>
         </div>
 
-        <!-- Start Screen / Clean Interface -->
+        <!-- Clean Home Screen -->
         <div id="start-screen" class="overlay">
-            <h1>TYPEBLITZ V3.2</h1>
+            <h1>TYPEBLITZ V3.3</h1>
             
             <div id="active-event-banner" class="event-banner">Weekly Event: Quantum Surge Active!</div>
 
             <div class="config-grid">
-                <p style="color:#00ffff; font-size:0.85rem; letter-spacing:1px;">SELECT GAME MODE:</p>
+                <p style="color:#00ffff; font-size:0.8rem; letter-spacing:1px;">SELECT GAME MODE:</p>
                 <div class="config-row" id="mode-selector">
                     <div class="mode-chip active" data-mode="arcade">Arcade Progression</div>
                     <div class="mode-chip" data-mode="timeattack">Time Attack (60s)</div>
                     <div class="mode-chip" data-mode="survival">Survival (1 Life)</div>
                 </div>
 
-                <p style="color:#00ffff; font-size:0.85rem; letter-spacing:1px; margin-top:5px;">VOCABULARY STREAM:</p>
+                <p style="color:#00ffff; font-size:0.8rem; letter-spacing:1px; margin-top:2px;">VOCABULARY STREAM:</p>
                 <div class="config-row" id="category-selector">
                     <div class="cat-chip active" data-cat="tech">Advanced Tech</div>
                     <div class="cat-chip" data-cat="scifi">Quantum Sci-Fi</div>
@@ -374,17 +373,17 @@
                 </div>
             </div>
 
-            <button class="arcade-btn" id="start-btn" style="margin-top: 15px;">INITIALIZE SIMULATION</button>
+            <button class="arcade-btn" id="start-btn" style="margin-top: 10px;">INITIALIZE SIMULATION</button>
         </div>
 
         <!-- Game Over Modal -->
         <div id="gameover-screen" class="overlay hidden">
             <h1 style="color:#ff3333; text-shadow:0 0 20px #ff3333;">SIMULATION TERMINATED</h1>
             <div class="glass-card">
-                <p style="font-size:1.1rem; color:#fff; margin-bottom:8px;">Final Score: <span id="final-score" style="color:#00ffff;">0</span></p>
-                <p style="font-size:0.95rem; color:#a0a8c0;">Stage Reached: <span id="final-stage" style="color:#ff007f;">1</span> | XP Gained: <span id="gained-xp" style="color:#ffaa00;">+0 XP</span></p>
+                <p style="font-size:1.05rem; color:#fff; margin-bottom:6px;">Final Score: <span id="final-score" style="color:#00ffff;">0</span></p>
+                <p style="font-size:0.9rem; color:#a0a8c0;">Stage Reached: <span id="final-stage" style="color:#ff007f;">1</span> | XP Gained: <span id="gained-xp" style="color:#ffaa00;">+0 XP</span></p>
             </div>
-            <button class="arcade-btn" id="restart-btn" style="margin-top:15px;">RE-BOOT SYSTEM</button>
+            <button class="arcade-btn" id="restart-btn" style="margin-top:10px;">RE-BOOT SYSTEM</button>
         </div>
     </div>
 
@@ -402,7 +401,7 @@
 
         const bossWords = ["overlord_quantum_core", "sentinel_mainframe_prime", "hyper_gateway_guardian_x"];
 
-        let profile = JSON.parse(localStorage.getItem('typeblitz_v32_profile')) || { xp: 0, level: 1, bestScore: 0, leaderboard: [] };
+        let profile = JSON.parse(localStorage.getItem('typeblitz_v33_profile')) || { xp: 0, level: 1, bestScore: 0, leaderboard: [] };
         
         let score = 0, stage = 1, combo = 1, consecutiveHits = 0, shields = 3;
         let gameActive = false, currentMode = 'arcade', currentCat = 'tech';
@@ -436,7 +435,6 @@
         }
         updateProfileUI();
 
-        // Navbar Modal Controllers
         document.getElementById('nav-profile-btn').addEventListener('click', () => {
             document.getElementById('profile-modal').classList.remove('hidden');
         });
@@ -527,6 +525,9 @@
             document.getElementById('profile-modal').classList.add('hidden');
             document.getElementById('leaderboard-modal').classList.add('hidden');
             
+            // Show HUD stats during gameplay
+            document.getElementById('hud-stats').classList.remove('hidden');
+
             let inputBox = document.getElementById('input-box');
             inputBox.disabled = false;
             inputBox.value = '';
@@ -707,6 +708,9 @@
             clearInterval(gameTimer);
             document.getElementById('input-box').disabled = true;
 
+            // Hide HUD stats on game over
+            document.getElementById('hud-stats').classList.add('hidden');
+
             let xpGained = Math.round(score / 5);
             if (activeEvent.includes("XP")) xpGained *= 2;
             profile.xp += xpGained;
@@ -716,7 +720,7 @@
 
             profile.leaderboard.push({ score, stage });
             profile.leaderboard.sort((a, b) => b.score - a.score);
-            localStorage.setItem('typeblitz_v32_profile', JSON.stringify(profile));
+            localStorage.setItem('typeblitz_v33_profile', JSON.stringify(profile));
 
             document.getElementById('final-score').innerText = score;
             document.getElementById('final-stage').innerText = stage;
