@@ -705,7 +705,7 @@
 
         const bossWords = ["overlord_quantum_core", "sentinel_mainframe_prime", "hyper_gateway_guardian_x"];
 
-        // Profile State
+        // Profile State (Works for both Guests and Google Users)
         let profile = JSON.parse(localStorage.getItem('typeblitz_v36_profile')) || { 
             username: "Guest Operator",
             avatarSeed: "operator_seed",
@@ -773,7 +773,7 @@
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
-        // Properly connected profile button listeners
+        // Profile button open for everyone (Guests and Google users)
         document.getElementById('nav-profile-btn').addEventListener('click', window.openProfileModal);
         document.getElementById('close-profile-btn').addEventListener('click', () => {
             document.getElementById('profile-modal').classList.add('hidden');
