@@ -1023,7 +1023,7 @@
 
             let speedMult = activeEvent.includes("Surge") ? 1.4 : 1.15;
             let baseSpeed = type === 'boss' ? 0.35 : (0.75 + Math.random() * 0.45);
-            let speed = baseSpeed * speedMult * (1 + (stage - 1) * 0.18);
+            let speed = baseSpeed * speedMult * (0.4 + (stage - 1) * 0.18);
 
             targets.push({ word, element: el, x, y, speed, type });
         }
