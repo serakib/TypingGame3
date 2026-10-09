@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Typing Game by Rakib v3.5</title>
+    <title>Typing Game by Rakib v3.4</title>
     <style>
         :root {
             --accent-color: #ff007f;
@@ -47,18 +47,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 15px;
+            padding: 8px 12px;
             background: rgba(12, 16, 30, 0.95);
             border-bottom: 2px solid var(--accent-glow);
             backdrop-filter: blur(10px);
             z-index: 10;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
 
         .logo {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 800;
             letter-spacing: 2px;
             color: #fff;
@@ -69,7 +69,7 @@
 
         .nav-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             flex-wrap: wrap;
         }
@@ -78,15 +78,14 @@
             background: rgba(16, 22, 40, 0.8);
             border: 1px solid rgba(0, 255, 255, 0.4);
             color: #00ffff;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             cursor: pointer;
             letter-spacing: 1px;
-            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
 
         .nav-btn:hover {
@@ -94,16 +93,37 @@
             box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
         }
 
+        .user-profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 22, 40, 0.9);
+            border: 1px solid var(--accent-color);
+            padding: 2px 8px 2px 3px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .user-avatar-mini {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid #00ffff;
+            background: #222;
+        }
+
         .stats-container {
             display: flex;
-            gap: 16px;
-            font-size: 0.8rem;
+            gap: 12px;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #a0a8c0;
             width: 100%;
             justify-content: center;
-            padding: 4px 0;
+            padding: 3px 0;
             background: rgba(7, 9, 19, 0.5);
         }
 
@@ -133,311 +153,491 @@
 
         .target {
             position: absolute;
-            padding: 6px 12px;
+            padding: 5px 10px;
             background: rgba(15, 22, 40, 0.9);
             border: 1px solid rgba(0, 255, 255, 0.4);
             border-radius: 6px;
             color: #ffffff;
-            font-size: 1rem;
-            letter-spacing: 1.5px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
             white-space: nowrap;
             z-index: 4;
             backdrop-filter: blur(4px);
-            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .target.active-target {
-            border-color: #00ffff;
-            box-shadow: 0 0 20px #00ffff;
-        }
+        .target.special-bomb { background: rgba(45, 10, 20, 0.9); border-color: #ff3333; box-shadow: 0 0 20px #ff3333; color: #ffcccc; }
+        .target.special-freeze { background: rgba(10, 30, 45, 0.9); border-color: #00ffff; box-shadow: 0 0 20px #00ffff; color: #cce6ff; }
+        .target.boss-word { background: rgba(40, 10, 40, 0.9); border: 2px dashed #ff00ff; box-shadow: 0 0 25px #ff00ff; font-size: 0.85rem; color: #ffccff; }
 
-        .target.special-bomb { background: rgba(45, 10, 20, 0.9); border-color: #ff3333; color: #ffcccc; }
-        .target.special-freeze { background: rgba(10, 30, 45, 0.9); border-color: #00ffff; color: #cce6ff; }
-        .target.boss-word { background: rgba(40, 10, 40, 0.9); border: 2px dashed #ff00ff; font-size: 0.9rem; color: #ffccff; }
-
-        .target .matched { color: #00ffff; font-weight: bold; }
-        .target.special-bomb .matched { color: #ff3333; }
-        .target.boss-word .matched { color: #ff00ff; }
+        .target .matched { color: #00ffff; text-shadow: 0 0 10px #00ffff; font-weight: bold; }
+        .target.special-bomb .matched { color: #ff3333; text-shadow: 0 0 10px #ff3333; }
+        .target.boss-word .matched { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
 
         #achievement-toast {
             position: absolute;
-            top: 15px;
+            top: 10px;
             right: -350px;
             background: linear-gradient(135deg, var(--accent-color), #7f00ff);
             color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 8px 15px;
+            border-radius: 6px;
             font-weight: bold;
             box-shadow: 0 0 25px var(--accent-glow);
             transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 100;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
         }
-        #achievement-toast.show { right: 15px; }
+        #achievement-toast.show { right: 10px; }
 
         footer {
-            padding: 15px 20px;
-            background: rgba(12, 16, 30, 0.95);
+            padding: 10px 15px;
+            background: rgba(12, 16, 30, 0.98);
             border-top: 2px solid var(--accent-glow);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             z-index: 10;
             backdrop-filter: blur(10px);
         }
 
         #input-box {
             width: 100%;
-            max-width: 600px;
-            padding: 12px 18px;
+            max-width: 500px;
+            padding: 10px 14px;
             background: #070913;
             border: 2px solid rgba(0, 255, 255, 0.4);
             border-radius: 8px;
             color: #00ffff;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             text-align: center;
             letter-spacing: 2px;
             outline: none;
             box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.15);
         }
 
-        .instructions { font-size: 0.7rem; color: #707c9c; text-align: center; }
+        #input-box:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 25px var(--accent-glow), inset 0 0 15px var(--accent-glow);
+        }
+
+        .instructions { font-size: 0.65rem; color: #707c9c; letter-spacing: 0.5px; text-align: center; }
 
         .overlay {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(7, 9, 19, 0.97);
+            background: rgba(7, 9, 19, 0.98);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            gap: 12px;
+            gap: 10px;
             overflow-y: auto;
-            padding: 20px;
+            padding: 15px;
             backdrop-filter: blur(15px);
         }
 
         .overlay h1 {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             color: #ffffff;
-            text-shadow: 0 0 15px var(--accent-color);
-            letter-spacing: 3px;
+            text-shadow: 0 0 15px var(--accent-color), 0 0 30px var(--accent-glow);
+            letter-spacing: 2px;
             text-align: center;
         }
 
         .glass-card {
             background: rgba(16, 22, 40, 0.75);
             border: 1px solid var(--accent-glow);
-            padding: 12px 20px;
-            border-radius: 10px;
+            padding: 10px 15px;
+            border-radius: 8px;
             text-align: center;
-            max-width: 450px;
+            max-width: 400px;
             width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
         }
 
-        .config-grid { display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; max-width: 450px; }
-        .config-row { display: flex; gap: 6px; align-items: center; justify-content: center; width: 100%; flex-wrap: wrap; }
+        .config-grid { display: flex; flex-direction: column; gap: 5px; align-items: center; width: 100%; max-width: 400px; }
+        .config-row { display: flex; gap: 5px; align-items: center; justify-content: center; width: 100%; flex-wrap: wrap; }
 
         .mode-chip, .cat-chip, .sub-cat-chip, .color-chip {
-            padding: 6px 12px;
+            padding: 5px 10px;
             background: rgba(16, 22, 40, 0.8);
             border: 1px solid rgba(0, 255, 255, 0.3);
             color: #a0a8c0;
             cursor: pointer;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            transition: all 0.2s;
         }
 
         .mode-chip.active, .cat-chip.active, .sub-cat-chip.active {
             background: var(--accent-glow);
             border-color: var(--accent-color);
             color: #ffffff;
+            box-shadow: 0 0 12px var(--accent-glow);
         }
 
-        .color-chip { width: 28px; height: 28px; padding: 0; border-radius: 50%; display: inline-block; border: 2px solid #fff; }
+        .color-chip { width: 24px; height: 24px; padding: 0; border-radius: 50%; display: inline-block; border: 2px solid #fff; }
 
         .arcade-btn {
-            padding: 10px 30px;
+            padding: 8px 24px;
             background: linear-gradient(135deg, var(--accent-color), #7f00ff);
             border: none;
             color: #ffffff;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
-            letter-spacing: 2px;
-            border-radius: 8px;
+            letter-spacing: 1.5px;
+            border-radius: 6px;
+            transition: all 0.3s;
             box-shadow: 0 0 20px var(--accent-glow);
         }
 
         .hidden { display: none !important; }
 
         .event-banner {
-            background: rgba(255,170,0,0.15);
+            background: linear-gradient(90deg, rgba(255,170,0,0.1), rgba(255,170,0,0.25), rgba(255,170,0,0.1));
             border: 1px solid #ffaa00;
             color: #ffcc55;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
             text-align: center;
         }
 
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(3, 5, 10, 0.85);
+            background: rgba(3, 5, 10, 0.88);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 200;
-            padding: 15px;
+            padding: 10px;
         }
         .modal-content {
             background: #0e1424;
             border: 1px solid var(--accent-glow);
-            padding: 20px;
-            border-radius: 12px;
+            padding: 15px;
+            border-radius: 10px;
             width: 100%;
-            max-width: 420px;
+            max-width: 380px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             text-align: center;
             color: #fff;
         }
-        .modal-content h2 { font-size: 1.1rem; border-bottom: 1px solid var(--accent-glow); padding-bottom: 6px; }
-        .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-        .leaderboard-table th, .leaderboard-table td { border: 1px solid rgba(255, 0, 127, 0.2); padding: 6px; text-align: center; }
+        .modal-content h2 { color: #fff; font-size: 1rem; border-bottom: 1px solid var(--accent-glow); padding-bottom: 5px; }
+        
+        .profile-header {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            text-align: left;
+            background: rgba(16, 22, 40, 0.9);
+            padding: 8px;
+            border-radius: 6px;
+        }
+        .profile-avatar-box img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #00ffff;
+        }
+        .profile-info { flex-grow: 1; display: flex; flex-direction: column; gap: 3px; }
+        .profile-info input {
+            background: #070913;
+            border: 1px solid var(--accent-color);
+            color: #fff;
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+        .stat-box {
+            background: rgba(16, 22, 40, 0.6);
+            padding: 6px;
+            border-radius: 5px;
+        }
+        .stat-box span { display: block; font-size: 1rem; color: #00ffff; font-weight: bold; }
+        .stat-box label { font-size: 0.6rem; color: #a0a8c0; text-transform: uppercase; }
+        .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        .leaderboard-table th, .leaderboard-table td { border: 1px solid rgba(255, 0, 127, 0.2); padding: 5px; text-align: center; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">TypeBlitz <span>V3.5</span></div>
+        <div class="logo">Typing Game <span>V3.4</span></div>
         <div class="nav-actions">
-            <button class="nav-btn hidden" id="pause-btn">Pause</button>
+            <div id="auth-nav-container">
+                <button class="nav-btn" id="google-login-trigger">Google Login</button>
+            </div>
             <button class="nav-btn" id="nav-profile-btn">Profile</button>
-            <button class="nav-btn" id="nav-leaderboard-btn">Ranks</button>
-            <button class="nav-btn" id="nav-settings-btn">Theme</button>
+            <button class="nav-btn" id="nav-leaderboard-btn">Leaderboard</button>
+            <button class="nav-btn" id="nav-settings-btn">Settings</button>
         </div>
         <div class="stats-container hidden" id="hud-stats">
             <div>Stage: <span id="stage-display">1</span></div>
             <div>Score: <span id="score-display">0</span></div>
             <div>Combo: <span id="combo-display">1x</span></div>
             <div>Lives: <span id="shields-display">3</span></div>
+            <div>WPM: <span id="wpm-display">0</span></div>
         </div>
     </header>
 
     <div id="game-container">
         <div id="achievement-toast">System Alert</div>
 
-        <div id="pause-screen" class="overlay hidden" style="z-index: 150;">
-            <h1 style="color:#00ffff;">SIMULATION PAUSED</h1>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="arcade-btn" id="resume-btn">RESUME</button>
-                <button class="nav-btn" id="quit-to-menu-btn" style="justify-content:center; padding: 10px 20px;">QUIT TO MENU</button>
-            </div>
-        </div>
-
         <div id="profile-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>OPERATOR PROFILE</h2>
-                <div style="display: flex; gap: 10px; align-items: center; background: rgba(16,22,40,0.8); padding: 8px; border-radius: 6px;">
-                    <img id="profile-avatar-img" src="https://api.dicebear.com/7.x/bottts/svg?seed=operator" style="width:50px; height:50px; border-radius:50%; border:1px solid #00ffff;" alt="Avatar">
-                    <input type="text" id="profile-username-input" value="Guest Operator" maxlength="15" style="background:#070913; border:1px solid var(--accent-color); color:#fff; padding:5px; border-radius:4px; width:100%;">
+                <div class="profile-header">
+                    <div class="profile-avatar-box">
+                        <img id="profile-avatar-img" src="https://api.dicebear.com/7.x/bottts/svg?seed=operator" alt="Avatar">
+                        <button id="randomize-avatar-btn" style="font-size:8px; margin-top:3px; background:transparent; color:#00ffff; border:1px solid #00ffff; border-radius:3px; cursor:pointer;">Randomize</button>
+                    </div>
+                    <div class="profile-info">
+                        <label style="font-size:0.65rem; color:#a0a8c0;">Codename:</label>
+                        <input type="text" id="profile-username-input" value="Guest Operator" maxlength="15">
+                        <p style="font-size: 0.6rem; color: #00ffff;" id="profile-status-text">Mode: Local Offline</p>
+                    </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                    <div style="background:rgba(16,22,40,0.5); padding:8px; border-radius:6px;"><span id="stat-games" style="color:#00ffff; font-weight:bold;">0</span><br><label style="font-size:0.65rem; color:#a0a8c0;">Games</label></div>
-                    <div style="background:rgba(16,22,40,0.5); padding:8px; border-radius:6px;"><span id="stat-xp" style="color:#00ffff; font-weight:bold;">0</span><br><label style="font-size:0.65rem; color:#a0a8c0;">XP</label></div>
+
+                <div class="stats-grid">
+                    <div class="stat-box"><span id="stat-games">0</span><label>Simulations</label></div>
+                    <div class="stat-box"><span id="stat-peak-wpm">0</span><label>Peak WPM</label></div>
+                    <div class="stat-box"><span id="stat-avg-accuracy">0%</span><label>Accuracy</label></div>
+                    <div class="stat-box"><span id="stat-xp">0</span><label>Total XP</label></div>
                 </div>
-                <button class="arcade-btn" id="save-profile-btn" style="padding: 8px;">Save Profile</button>
-                <button class="nav-btn" id="close-profile-btn" style="justify-content:center; padding:8px;">BACK</button>
+
+                <div style="font-size: 0.7rem; color:#a0a8c0;">
+                    Rank: <span id="modal-rank-tier" style="color:#00ffff; font-weight:bold;">Cyber Cadet</span> | Lvl: <span id="modal-level" style="color:#fff;">1</span>
+                </div>
+
+                <div style="display: flex; gap: 6px;">
+                    <button class="arcade-btn" id="save-profile-btn" style="flex:1; padding: 6px; font-size:0.75rem;">Save</button>
+                    <button class="nav-btn" id="logout-btn" style="background:rgba(255,0,0,0.15); border-color:#ff3333; color:#ff9999; justify-content:center; display:none; padding:6px;">Logout</button>
+                </div>
+                <button class="nav-btn" id="close-profile-btn" style="justify-content:center; padding:6px;">BACK TO MENU</button>
             </div>
         </div>
 
         <div id="leaderboard-modal" class="modal-overlay hidden">
             <div class="modal-content">
-                <h2>LEADERBOARD</h2>
+                <h2>GLOBAL LEADERBOARD</h2>
                 <table class="leaderboard-table">
                     <thead><tr><th>Rank</th><th>Score</th><th>Stage</th></tr></thead>
                     <tbody id="leaderboard-rows"><tr><td colspan="3">No records found</td></tr></tbody>
                 </table>
-                <button class="nav-btn" id="close-leaderboard-btn" style="margin-top:5px; justify-content:center;">BACK</button>
+                <button class="nav-btn" id="close-leaderboard-btn" style="margin-top:5px; justify-content:center; padding:6px;">BACK</button>
             </div>
         </div>
 
         <div id="settings-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>THEME COLOR</h2>
-                <div class="config-row" style="margin: 10px 0;">
+                <div class="config-row" style="margin: 8px 0;">
                     <div class="color-chip" data-color="#ff007f" style="background:#ff007f;"></div>
                     <div class="color-chip" data-color="#ff7700" style="background:#ff7700;"></div>
                     <div class="color-chip" data-color="#00ffcc" style="background:#00ffcc;"></div>
                     <div class="color-chip" data-color="#33cc33" style="background:#33cc33;"></div>
                     <div class="color-chip" data-color="#aa00ff" style="background:#aa00ff;"></div>
                 </div>
-                <button class="nav-btn" id="close-settings-btn" style="justify-content:center;">BACK</button>
+                <button class="nav-btn" id="close-settings-btn" style="justify-content:center; padding:6px;">BACK</button>
             </div>
         </div>
 
         <div id="start-screen" class="overlay">
-            <h1>TYPEBLITZ V3.5</h1>
-            <div id="active-event-banner" class="event-banner">Quantum Surge Active!</div>
+            <h1>TYPEBLITZ V3.4</h1>
+            <div id="active-event-banner" class="event-banner">Weekly Event: Quantum Surge Active!</div>
+
             <div class="config-grid">
-                <p style="color:#00ffff; font-size:0.75rem;">SELECT MODE:</p>
+                <p style="color:#00ffff; font-size:0.7rem; letter-spacing:1px;">SELECT GAME MODE:</p>
                 <div class="config-row" id="mode-selector">
-                    <div class="mode-chip active" data-mode="arcade">Arcade</div>
-                    <div class="mode-chip" data-mode="timeattack">60s Attack</div>
-                    <div class="mode-chip" data-mode="survival">Survival</div>
+                    <div class="mode-chip active" data-mode="arcade">Arcade Progression</div>
+                    <div class="mode-chip" data-mode="timeattack">Time Attack (60s)</div>
+                    <div class="mode-chip" data-mode="survival">Survival (1 Life)</div>
                 </div>
-                <p style="color:#00ffff; font-size:0.75rem; margin-top:4px;">CATEGORY:</p>
+
+                <p style="color:#00ffff; font-size:0.7rem; letter-spacing:1px; margin-top:2px;">VOCABULARY STREAM:</p>
                 <div class="config-row" id="category-selector">
-                    <div class="cat-chip active" data-cat="tech">Tech</div>
+                    <div class="cat-chip active" data-cat="tech">Advanced Tech</div>
                     <div class="cat-chip" data-cat="science">Science</div>
-                    <div class="cat-chip" data-cat="scifi">Sci-Fi</div>
-                    <div class="cat-chip" data-cat="coding">Coding</div>
+                    <div class="cat-chip" data-cat="scifi">Quantum Sci-Fi</div>
+                    <div class="cat-chip" data-cat="coding">Syntax & Code</div>
+                </div>
+
+                <div id="science-sub-selector" class="config-row hidden" style="margin-top: 4px;">
+                    <div class="sub-cat-chip active" data-subcat="all">All Science</div>
+                    <div class="sub-cat-chip" data-subcat="biology">Biology</div>
+                    <div class="sub-cat-chip" data-subcat="physics">Physics</div>
+                    <div class="sub-cat-chip" data-subcat="chemistry">Chemistry</div>
+                    <div class="sub-cat-chip" data-subcat="astronomy">Astronomy</div>
+                    <div class="sub-cat-chip" data-subcat="earth">Earth Science</div>
                 </div>
             </div>
-            <button class="arcade-btn" id="start-btn" style="margin-top: 12px;">START GAME</button>
+
+            <button class="arcade-btn" id="start-btn" style="margin-top: 8px;">INITIALIZE SIMULATION</button>
         </div>
 
         <div id="gameover-screen" class="overlay hidden">
-            <h1 style="color:#ff3333;">SIMULATION TERMINATED</h1>
+            <h1 style="color:#ff3333; text-shadow:0 0 15px #ff3333;">SIMULATION TERMINATED</h1>
             <div class="glass-card">
-                <p style="font-size:1rem; color:#fff;">Score: <span id="final-score" style="color:#00ffff;">0</span></p>
-                <p style="font-size:0.8rem; color:#a0a8c0;">Stage: <span id="final-stage" style="color:var(--accent-color);">1</span> | XP: <span id="gained-xp" style="color:#ffaa00;">+0</span></p>
+                <p style="font-size:0.9rem; color:#fff; margin-bottom:4px;">Final Score: <span id="final-score" style="color:#00ffff;">0</span></p>
+                <p style="font-size:0.75rem; color:#a0a8c0;">Stage Reached: <span id="final-stage" style="color:var(--accent-color);">1</span> | XP Gained: <span id="gained-xp" style="color:#ffaa00;">+0 XP</span></p>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button class="arcade-btn" id="restart-btn">RE-BOOT</button>
-                <button class="nav-btn" id="back-to-menu-btn" style="justify-content:center;">MENU</button>
+            <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: center;">
+                <button class="arcade-btn" id="restart-btn" style="padding: 6px 20px; font-size:0.85rem;">RE-BOOT</button>
+                <button class="nav-btn" id="back-to-menu-btn" style="justify-content:center; padding:6px;">BACK TO MENU</button>
             </div>
         </div>
     </div>
 
     <footer>
-        <input type="text" id="input-box" placeholder="TYPE FALLING PACKETS..." autocomplete="off" autocapitalize="none" spellcheck="false" disabled>
-        <div class="instructions">Red=Bomb | Blue=Freeze | Purple=Boss (10 Letters)</div>
+        <input type="text" id="input-box" placeholder="TYPE FALLING QUANTUM PACKETS..." autocomplete="off" autocapitalize="none" spellcheck="false" disabled>
+        <div class="instructions">Type targets fully. Red=Bomb, Blue=Freeze, Purple=Boss (10 Letters).</div>
     </footer>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWPpAhnn-OZokPwh5qFRU8McEvh7smlsQ",
+            authDomain: "medical-admission-pro.firebaseapp.com",
+            projectId: "medical-admission-pro",
+            storageBucket: "medical-admission-pro.firebasestorage.app",
+            messagingSenderId: "371132803062",
+            appId: "1:371132803062:web:f46520b234593d9e9009d7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        const authNavContainer = document.getElementById('auth-nav-container');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        async function handleGoogleLogin() {
+            try { await signInWithPopup(auth, provider); } catch (error) {}
+        }
+        document.getElementById('google-login-trigger')?.addEventListener('click', handleGoogleLogin);
+        logoutBtn.addEventListener('click', async () => {
+            try { await signOut(auth); document.getElementById('profile-modal').classList.add('hidden'); } catch (e) {}
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.isGoogleAuthed = true;
+                window.googleUser = user;
+                authNavContainer.innerHTML = `
+                    <div class="user-profile-mini" id="nav-profile-quick" title="View Profile">
+                        <img src="${user.photoURL || 'https://via.placeholder.com/20'}" class="user-avatar-mini" alt="Avatar">
+                        <span>${user.displayName ? user.displayName.split(' ')[0] : "Pilot"}</span>
+                    </div>
+                `;
+                document.getElementById('nav-profile-quick').addEventListener('click', () => window.openProfileModal());
+                document.getElementById('profile-username-input').value = user.displayName || "Google Operator";
+                document.getElementById('profile-avatar-img').src = user.photoURL || "https://api.dicebear.com/7.x/bottts/svg?seed=google";
+                document.getElementById('profile-status-text').innerText = "Mode: Google Cloud Synced";
+                logoutBtn.style.display = "block";
+            } else {
+                window.isGoogleAuthed = false;
+                window.googleUser = null;
+                authNavContainer.innerHTML = `
+                    <button class="nav-btn" id="google-login-trigger">Google Login</button>
+                `;
+                document.getElementById('google-login-trigger').addEventListener('click', handleGoogleLogin);
+                logoutBtn.style.display = "none";
+                document.getElementById('profile-status-text').innerText = "Mode: Local Offline";
+            }
+        });
+    </script>
+
     <script>
+        const scienceSubCategories = {
+            biology: [
+                "photosynthesis", "mitochondria", "chromosome", "ecosystem", "osmosis", "catalyst", "molecule", "genetics", "organelle", "homeostasis", "enzyme", "neuron", "nucleus", "symbiosis", "cytoplasm", "respiration", "metabolism", "protein", "ribosome", "pathogen", "antibodies", "evolution", "biodiversity", "chloroplast", "dna", "phagocyte", "endoplasmic", "eukaryote", "prokaryote", "alleles",
+                "adaptation", "aerobic", "anaerobic", "amino", "acid", "anatomy", "artery", "asexual", "bacteria", "biodegradable", "biomes", "biosynthesis", "biota", "blastula", "botany", "bryophyte", "calorie", "carbohydrate", "carnivore", "carotenoid", "cartilage", "cell", "centriole", "centromere", "cephalopod", "cerebellum", "cerebrum", "chemosynthesis", "chitin", "chlorophyll",
+                "cholesterol", "chromatin", "cilia", "circulatory", "cistron", "cleavage", "clone", "cochlea", "codominance", "codon", "coenzyme", "colony", "commensalism", "companion", "competition", "compound", "conception", "conifer", "conjugation", "connective", "consumer", "contractile", "cortex", "cotyledon", "cranial", "cristae", "crossing", "crustacean", "cuticle", "cyanobacteria"
+            ],
+            physics: [
+                "thermodynamics", "momentum", "electromagnetism", "velocity", "gravitation", "relativity", "quantum", "entropy", "isotope", "quark", "electron", "proton", "wavelength", "frequency", "acceleration", "kinetic", "potential", "friction", "inertia", "superposition", "plasma", "radiation", "photon", "capacitor", "torque", "superconductor", "oscillation", "spectrometry", "vector", "amplitude",
+                "annihilation", "antimatter", "aphelion", "armature", "astigmatism", "attenuation", "avogadro", "axis", "barometer", "becquerel", "beta", "bifocal", "binary", "binomial", "birefringence", "blackbody", "boltzmann", "boson", "boyle", "brewster", "brownian", "buoyancy", "calorimeter", "candela", "capacitance", "centrifugal", "centripetal", "chaos", "charge", "charles",
+                "chromatic", "circuit", "clapeyron", "cohesion", "collimator", "collisions", "component", "compressibility", "concave", "condenser", "conduction", "conductivity", "conductor", "conserve", "constant", "constructive", "convection", "converging", "convex", "coulomb", "counterweight", "crest", "critical", "cryogenics", "curie", "current", "cyclotron", "damping", "deceleration", "decibel"
+            ],
+            chemistry: [
+                "stoichiometry", "endothermic", "exothermic", "electronegativity", "polymerization", "catalysis", "titration", "hydrocarbon", "molarity", "enthalpy", "allotrope", "buffer", "valence", "oxidation", "reduction", "solution", "equilibrium", "precipitate", "spectroscopy", "alkane", "combustion", "electrolysis", "isomer", "acid", "actinide",
+                "activation", "adsorption", "aerogel", "alchemy", "aliphatic", "alkaline", "alkene", "alkyne", "alloys", "alpha", "alumina", "amalgam", "amide", "amine", "amorphous", "amphoteric", "anhydrous", "anion", "anode", "antiaromatic", "aqueous", "arenes", "argentum", "aromatic", "arrhenius", "atmosphere", "atom", "atomic", "attractor", "aurum",
+                "avogadro", "azeotrope", "azide", "azo", "barium", "base", "becquerel", "beer", "benzene", "berkelium", "beryllium", "bismuth", "bohrium", "boiling", "bond", "borane", "boron", "boyle", "bragg", "brass", "bromine", "bronsted", "bronze", "buckyball", "buren", "butane", "cadmium", "calcium", "californium", "calorimeter"
+            ],
+            astronomy: [
+                "supernova", "singularity", "nebula", "pulsar", "quasar", "magnetar", "heliosphere", "astrometry", "parsec", "spectrograph", "bolide", "exoplanet", "accretion", "cosmology", "interstellar", "horizon", "redshift", "blazar", "starlight", "telescope", "astrolabe", "chromosphere", "eclipse", "galaxy", "supercluster", "apastron",
+                "apee", "apocenter", "apogee", "apsides", "areocentric", "asterism", "asteroid", "astrolabe", "astrometry", "astronaut", "astronomical", "astrophysics", "atmosphere", "aurora", "autumnal", "azimuth", "background", "baricenter", "barycenter", "binary", "blazar", "bolide", "bolometer", "bow", "brown", "candidate", "cataclysmic", "celestial", "centaur", "cepheid",
+                "chandrasekhar", "charge", "chromosphere", "circumpolar", "cluster", "collimation", "comet", "conjunction", "constellation", "continental", "continuum", "convection", "corona", "coronagraph", "cosmic", "cosmological", "cosmos", "crater", "critical", "cronus", "curvature", "cyanogen", "cycle", "cyclical", "dark", "declination", "deferent", "degenerate", "density", "diameter"
+            ],
+            earth: [
+                "tectonics", "stratigraphy", "lithosphere", "hydrological", "atmosphere", "stratosphere", "troposphere", "seismograph", "subduction", "magma", "metamorphic", "sedimentary", "phenomenon", "biosphere", "cryosphere", "orogeny", "paleontology", "geothermal", "aquifer", "weathering", "epicenter", "faultline", "topography", "tsunami", "volcanology", "ablation",
+                "abyssal", "accretion", "acid", "aftershock", "aggradation", "alluvial", "alpine", "altimeter", "altitude", "ambient", "amphibole", "andesite", "anticline", "anticyclone", "aphanitic", "aqueduct", "aquiclude", "aquitard", "archipelago", "arenaceous", "arête", "arkose", "artesian", "ash", "asthenosphere", "atoll", "avalanche", "badlands", "barchan", "barrier",
+                "basalt", "basin", "batholith", "bauxite", "beach", "bedrock", "benthos", "berm", "bifurcation", "biodegradable", "biomicrite", "biostrome", "biotite", "birefringence", "bitumen", "blizzard", "block", "blowout", "boding", "bog", "bolson", "bomb", "boom", "bore", "boulder", "boundary", "breccia", "brine", "bryozoan", "buerger"
+            ]
+        };
+
         const masterDictionaries = {
-            tech: ["algorithm", "bandwidth", "circuit", "database", "ethernet", "firewall", "gigabyte", "hardware", "interface", "javascript", "keyboard", "mainframe", "network", "optimizer", "processor", "quantum", "router", "software", "terminal", "virtual", "wireless", "analytics", "blockchain", "compiler", "debugging", "encryption"],
-            science: ["photosynthesis", "mitochondria", "chromosome", "ecosystem", "osmosis", "catalyst", "molecule", "genetics", "thermodynamics", "momentum", "velocity", "isotope", "quark", "electron", "proton", "stoichiometry", "endothermic", "supernova", "singularity", "nebula", "pulsar", "tectonics", "stratigraphy"],
-            scifi: ["andromeda", "battleship", "cortex", "dimension", "eclipse", "fusion", "galaxy", "hologram", "ionizer", "juggernaut", "krypton", "laserbeam", "meteorite", "outpost", "photon", "quasar", "reactor", "singularity", "tachyon", "universe", "vortex", "wormhole"],
-            coding: ["asynchronous", "boolean", "constant", "dependency", "encapsulation", "framework", "generator", "inheritance", "keyword", "lambda", "middleware", "namespace", "override", "polymorphism", "query", "recursion", "statement", "typescript", "undefined", "variable", "webpack", "yield"]
+            tech: [
+                "algorithm", "bandwidth", "circuit", "database", "ethernet", "firewall", "gigabyte", "hardware", "interface", "javascript", "keyboard", "mainframe", "network", "optimizer", "processor", "quantum", "router", "software", "terminal", "ultrasound", "virtual", "wireless", "xenia", "yotabyte", "zero", "analytics", "blockchain", "compiler", "debugging", "encryption",
+                "accessibility", "accumulator", "adapter", "address", "agent", "aggregate", "agile", "allocation", "analyst", "android", "antivirus", "apache", "applet", "application", "architecture", "archive", "argument", "array", "artifact", "assembler", "assertion", "async", "atomic", "attribute", "audio", "augmented", "automation", "avatar", "backend", "backup",
+                "balancing", "batch", "battery", "beacon", "benchmark", "binary", "biometric", "bitrate", "bluetooth", "bootloader", "botnet", "breakpoint", "broadband", "browser", "buffer", "bugfix", "bytecode", "cache", "callback", "camera", "canvas", "capacitor", "captcha", "capture", "cascade", "catalog", "catalyst", "cc", "cdrom", "cellular",
+                "certificate", "chatbot", "chipset", "ciphertext", "client", "cluster", "codec", "coldboot", "colocation", "command", "comment", "commercial", "common", "communication", "community", "compatible", "compilation", "component", "compressed", "compute", "computer", "computing", "concatenate", "concurrency", "config", "connection", "console", "constant", "container", "content"
+            ],
+            science: [...scienceSubCategories.biology, ...scienceSubCategories.physics, ...scienceSubCategories.chemistry, ...scienceSubCategories.astronomy, ...scienceSubCategories.earth],
+            scifi: [
+                "andromeda", "battleship", "cortex", "dimension", "eclipse", "fusion", "galaxy", "hologram", "ionizer", "juggernaut", "krypton", "laserbeam", "meteorite", "nebula", "outpost", "photon", "quasar", "reactor", "singularity", "tachyon", "universe", "vortex", "wormhole", "xenon", "yoda", "zenith", "astro", "bounty", "cyber", "dreadnought",
+                "accelerator", "aerospace", "alien", "alpha", "amplify", "anomaly", "anti", "armored", "artificial", "astral", "atomic", "augmented", "automaton", "avatar", "barrier", "beacon", "beam", "bionic", "biosphere", "blaster", "borg", "bounty", "brane", "breach", "bridge", "bunker", "capsule", "carbon", "cargo", "celestial",
+                "centauri", "chamber", "chaos", "charged", "chronal", "chronicle", "chronos", "circuit", "civilization", "clone", "cluster", "cockpit", "colony", "command", "commander", "common", "communication", "computer", "conduit", "conflict", "conqueror", "console", "contact", "containment", "core", "corridor", "cosmic", "cosmos", "counter", "covenant",
+                "cradle", "crew", "cryo", "crypt", "crystal", "cst", "current", "cybernetic", "cyborg", "cycle", "cygnus", "cylinder", "dagger", "darkness", "data", "datum", "dawn", "daylight", "debris", "decoy", "deep", "defend", "deflector", "delta", "density", "depot", "derelict", "descent", "destiny", "destroyer"
+            ],
+            coding: [
+                "asynchronous", "boolean", "constant", "dependency", "encapsulation", "framework", "generator", "inheritance", "JSON", "keyword", "lambda", "middleware", "namespace", "override", "polymorphism", "query", "recursion", "statement", "typescript", "undefined", "variable", "webpack", "xmlhttprequest", "yield", "closure", "destructuring", "export", "import", "promise", "syntax",
+                "abstract", "accept", "access", "accessor", "action", "activation", "active", "adapter", "add", "addition", "address", "adjacency", "agent", "aggregate", "ajax", "algorithm", "alias", "allocate", "allow", "alpha", "alter", "always", "ambient", "ambiguous", "amount", "analysis", "analytic", "anchor", "android", "angular",
+                "animate", "annotation", "anonymous", "answer", "antialiasing", "any", "apache", "apex", "api", "app", "append", "apple", "application", "applied", "apply", "applet", "approval", "approximate", "apps", "arch", "architecture", "archive", "area", "arena", "argon", "argument", "arithmetic", "arm", "array", "arrival",
+                "arrow", "artifact", "artificial", "as", "asc", "ascii", "aspect", "assemble", "assembler", "assembly", "assert", "assertion", "asset", "assign", "assignment", "assist", "associate", "association", "assume", "asterisk", "async", "asynchronous", "at", "atom", "atomic", "attach", "attachment", "attack", "attempt", "attend"
+            ]
         };
 
         const bossWords = [
             "algorithmics", "appletspace", "architected", "automationn", "bandwidthss", "binarycodes", "blockchains", "bootloaders", "bytecodings", "cachedatas",
-            "ciphertexts", "cloudservers", "codingsyntax", "compilersys", "cyberattacks", "cybernetica", "cyberpunked", "cyberspaces", "databaseapi", "datacenters"
+            "ciphertexts", "cloudservers", "codingsyntax", "compilersys", "cyberattacks", "cybernetica", "cyberpunked", "cyberspaces", "databaseapi", "datacenters",
+            "debuggingss", "deeplearning", "dependencyy", "digitalized", "edgetracker", "encryptions", "ethernetsys", "firewallsys", "frameworkss", "gigabytedat",
+            "hardwaresys", "hypergatedev", "interfacesys", "javascripts", "kernelspace", "mainframesys", "microchipsz", "nanobotsys", "networkings", "neuralwares",
+            "optimizeres", "packetdriver", "processorss", "quantumcore", "quantumdots", "quantumjump", "quantumlink", "quantumpunk", "quantumtech", "quantumwave",
+            "routerlinks", "scriptingcs", "searcherbot", "securitysys", "serversites", "smartarrays", "softwaresys", "supercluster", "supernetwkz", "syntaxesys",
+            "systemboots", "terminalsys", "typescripts", "ultrasounds", "virtualmach", "virtualnets", "wirelessnet", "workstations", "xeniafields", "yotabytedat",
+            "zerorotation", "accesscontr", "adaptivesys", "agiledevops", "analyticssb", "antivirusss", "application", "arraymatrix", "asynchronus", "autonomouss",
+            "backdoornet", "backupcloud", "basebanddev", "batchproces", "beaconpulse", "benchmarker", "bimetricdev", "bitratescal", "bluetoothsy", "bootstrapps",
+            "breakpointz", "broadbandne", "browsersapp", "bufferspace", "bugfixingsz", "bytearrayed", "calculators", "capacitator", "chiphertext", "codegenerat"
         ];
 
         let profile = JSON.parse(localStorage.getItem('typeblitz_v36_profile')) || { 
-            username: "Guest Operator", avatarSeed: "operator", xp: 0, level: 1, 
-            bestScore: 0, gamesPlayed: 0, leaderboard: [], themeColor: '#ff007f' 
+            username: "Guest Operator",
+            avatarSeed: "operator_seed",
+            xp: 0, 
+            level: 1, 
+            bestScore: 0, 
+            gamesPlayed: 0,
+            totalAccuracySum: 0,
+            peakWpm: 0,
+            leaderboard: [], 
+            themeColor: '#ff007f' 
         };
         
         function applyTheme(color) {
@@ -449,15 +649,39 @@
         applyTheme(profile.themeColor);
 
         let score = 0, stage = 1, combo = 1, consecutiveHits = 0, shields = 3;
-        let gameActive = false, isPaused = false, currentMode = 'arcade', currentCat = 'tech';
+        let gameActive = false, currentMode = 'arcade', currentCat = 'tech', currentSubCat = 'all';
         let targets = [], availableWords = [];
         let usedWordsDuringSession = new Set();
         let spawnInterval = null, gameTimer = null, timeLeft = 60;
+        let totalTypedChars = 0, correctTypedChars = 0, startTime = 0;
         let activeLockedTarget = null;
 
+        const weeklyEvents = ["Quantum Surge (+Speed)", "Double XP Protocol", "Shield Boost Week", "Standard Synchronicity"];
+        let activeEvent = weeklyEvents[Math.floor(Date.now() / (1000 * 60 * 60 * 24 * 7)) % weeklyEvents.length];
+        document.getElementById('active-event-banner').innerText = `Weekly Event Active: ${activeEvent}`;
+
+        function getRankTier(level) {
+            if (level >= 10) return "Netrunner Legend [Tier S]";
+            if (level >= 6) return "Quantum Master [Tier A]";
+            if (level >= 3) return "Data Hacker [Tier B]";
+            return "Cyber Cadet [Tier C]";
+        }
+
         function updateProfileUI() {
+            document.getElementById('modal-rank-tier').innerText = getRankTier(profile.level);
+            document.getElementById('modal-level').innerText = profile.level;
             document.getElementById('stat-xp').innerText = profile.xp;
+            
             document.getElementById('stat-games').innerText = profile.gamesPlayed || 0;
+            document.getElementById('stat-peak-wpm').innerText = profile.peakWpm || 0;
+            let avgAcc = profile.gamesPlayed > 0 ? Math.round(profile.totalAccuracySum / profile.gamesPlayed) : 0;
+            document.getElementById('stat-avg-accuracy').innerText = avgAcc + "%";
+
+            if (!window.isGoogleAuthed) {
+                document.getElementById('profile-username-input').value = profile.username;
+                document.getElementById('profile-avatar-img').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${profile.avatarSeed}`;
+            }
+
             let lbTable = document.getElementById('leaderboard-rows');
             if (profile.leaderboard && profile.leaderboard.length > 0) {
                 lbTable.innerHTML = profile.leaderboard.slice(0, 5).map((entry, idx) => 
@@ -468,42 +692,50 @@
             }
         }
 
-        document.getElementById('nav-profile-btn').addEventListener('click', () => { updateProfileUI(); document.getElementById('profile-modal').classList.remove('hidden'); });
-        document.getElementById('close-profile-btn').addEventListener('click', () => document.getElementById('profile-modal').classList.add('hidden'));
-        document.getElementById('nav-leaderboard-btn').addEventListener('click', () => { updateProfileUI(); document.getElementById('leaderboard-modal').classList.remove('hidden'); });
-        document.getElementById('close-leaderboard-btn').addEventListener('click', () => document.getElementById('leaderboard-modal').classList.add('hidden'));
-        document.getElementById('nav-settings-btn').addEventListener('click', () => document.getElementById('settings-modal').classList.remove('hidden'));
-        document.getElementById('close-settings-btn').addEventListener('click', () => document.getElementById('settings-modal').classList.add('hidden'));
+        window.openProfileModal = function() {
+            updateProfileUI();
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
 
-        document.querySelectorAll('.color-chip').forEach(chip => chip.addEventListener('click', () => applyTheme(chip.dataset.color)));
-
-        // Pause System
-        const pauseBtn = document.getElementById('pause-btn');
-        const pauseScreen = document.getElementById('pause-screen');
-
-        pauseBtn.addEventListener('click', () => {
-            if (!gameActive) return;
-            isPaused = true;
-            pauseScreen.classList.remove('hidden');
-            document.getElementById('input-box').disabled = true;
+        document.getElementById('nav-profile-btn').addEventListener('click', window.openProfileModal);
+        document.getElementById('close-profile-btn').addEventListener('click', () => {
+            document.getElementById('profile-modal').classList.add('hidden');
         });
 
-        document.getElementById('resume-btn').addEventListener('click', () => {
-            isPaused = false;
-            pauseScreen.classList.add('hidden');
-            document.getElementById('input-box').disabled = false;
-            document.getElementById('input-box').focus();
+        document.getElementById('randomize-avatar-btn').addEventListener('click', () => {
+            if (window.isGoogleAuthed) return;
+            profile.avatarSeed = Math.random().toString(36).substring(7);
+            document.getElementById('profile-avatar-img').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${profile.avatarSeed}`;
         });
 
-        document.getElementById('quit-to-menu-btn').addEventListener('click', () => {
-            isPaused = false;
-            gameActive = false;
-            pauseScreen.classList.add('hidden');
-            document.getElementById('hud-stats').classList.add('hidden');
-            pauseBtn.classList.add('hidden');
-            targets.forEach(t => t.element.remove());
-            targets = [];
-            document.getElementById('start-screen').classList.remove('hidden');
+        document.getElementById('save-profile-btn').addEventListener('click', () => {
+            if (!window.isGoogleAuthed) {
+                let newName = document.getElementById('profile-username-input').value.trim();
+                if (newName) profile.username = newName;
+            }
+            localStorage.setItem('typeblitz_v36_profile', JSON.stringify(profile));
+            document.getElementById('profile-modal').classList.add('hidden');
+        });
+
+        document.getElementById('nav-leaderboard-btn').addEventListener('click', () => {
+            updateProfileUI();
+            document.getElementById('leaderboard-modal').classList.remove('hidden');
+        });
+        document.getElementById('close-leaderboard-btn').addEventListener('click', () => {
+            document.getElementById('leaderboard-modal').classList.add('hidden');
+        });
+
+        document.getElementById('nav-settings-btn').addEventListener('click', () => {
+            document.getElementById('settings-modal').classList.remove('hidden');
+        });
+        document.getElementById('close-settings-btn').addEventListener('click', () => {
+            document.getElementById('settings-modal').classList.add('hidden');
+        });
+
+        document.querySelectorAll('.color-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                applyTheme(chip.dataset.color);
+            });
         });
 
         document.getElementById('back-to-menu-btn').addEventListener('click', () => {
@@ -519,29 +751,95 @@
             });
         });
 
+        const scienceSubSelectorEl = document.getElementById('science-sub-selector');
+
         document.querySelectorAll('.cat-chip').forEach(chip => {
             chip.addEventListener('click', () => {
                 document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
                 chip.classList.add('active');
                 currentCat = chip.dataset.cat;
+
+                if (currentCat === 'science') {
+                    scienceSubSelectorEl.classList.remove('hidden');
+                } else {
+                    scienceSubSelectorEl.classList.add('hidden');
+                }
+            });
+        });
+
+        document.querySelectorAll('.sub-cat-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.sub-cat-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentSubCat = chip.dataset.subcat;
             });
         });
 
         document.getElementById('start-btn').addEventListener('click', startGame);
         document.getElementById('restart-btn').addEventListener('click', startGame);
 
+        let audioCtx = null;
+        function playTone(freq, type, duration) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function spawnParticles(x, y, color) {
+            for (let i = 0; i < 8; i++) {
+                let p = document.createElement('div');
+                p.className = 'particle';
+                p.style.background = color;
+                p.style.boxShadow = `0 0 10px ${color}`;
+                p.style.left = `${x}px`;
+                p.style.top = `${y}px`;
+                document.getElementById('game-container').appendChild(p);
+
+                let angle = Math.random() * Math.PI * 2;
+                let speed = 2 + Math.random() * 3;
+                let vx = Math.cos(angle) * speed, vy = Math.sin(angle) * speed, opacity = 1;
+
+                let anim = setInterval(() => {
+                    p.style.left = `${parseFloat(p.style.left) + vx}px`;
+                    p.style.top = `${parseFloat(p.style.top) + vy}px`;
+                    opacity -= 0.05;
+                    p.style.opacity = opacity;
+                    if (opacity <= 0) { clearInterval(anim); p.remove(); }
+                }, 20);
+            }
+        }
+
         function refillWordPool() {
-            availableWords = [...masterDictionaries[currentCat]];
+            if (currentCat === 'science' && currentSubCat !== 'all') {
+                availableWords = [...scienceSubCategories[currentSubCat]];
+            } else {
+                availableWords = [...masterDictionaries[currentCat]];
+            }
             availableWords.sort(() => Math.random() - 0.5);
         }
 
         function getNextWord() {
-            if (availableWords.length === 0) { refillWordPool(); usedWordsDuringSession.clear(); }
+            if (availableWords.length === 0) {
+                refillWordPool();
+                usedWordsDuringSession.clear();
+            }
+
             let word = availableWords.pop();
             while (usedWordsDuringSession.has(word) && availableWords.length > 0) {
                 availableWords.unshift(word);
                 word = availableWords.pop();
             }
+
             usedWordsDuringSession.add(word);
             return word;
         }
@@ -552,21 +850,27 @@
             document.getElementById('profile-modal').classList.add('hidden');
             document.getElementById('leaderboard-modal').classList.add('hidden');
             document.getElementById('settings-modal').classList.add('hidden');
+            
             document.getElementById('hud-stats').classList.remove('hidden');
-            pauseBtn.classList.remove('hidden');
 
             let inputBox = document.getElementById('input-box');
             inputBox.disabled = false;
             inputBox.value = '';
             inputBox.focus();
 
-            score = 0; stage = 1; combo = 1; consecutiveHits = 0;
+            score = 0;
+            stage = 1;
+            combo = 1;
+            consecutiveHits = 0;
             shields = currentMode === 'survival' ? 1 : 3;
             activeLockedTarget = null;
+
             targets.forEach(t => t.element.remove());
             targets = [];
             gameActive = true;
-            isPaused = false;
+            totalTypedChars = 0;
+            correctTypedChars = 0;
+            startTime = Date.now();
             timeLeft = 60;
 
             refillWordPool();
@@ -576,30 +880,29 @@
             clearInterval(spawnInterval);
             clearInterval(gameTimer);
 
-            // Balanced spawn rate (1.8 seconds) to prevent crowding
-            spawnInterval = setInterval(() => {
-                if (gameActive && !isPaused) spawnTarget();
-            }, 1800);
+            let rate = currentMode === 'timeattack' ? 1000 : 1400;
+            spawnInterval = setInterval(spawnTarget, rate);
 
             if (currentMode === 'timeattack') {
                 gameTimer = setInterval(() => {
-                    if (gameActive && !isPaused) {
-                        timeLeft--;
-                        if (timeLeft <= 0) endGame();
-                    }
+                    timeLeft--;
+                    document.getElementById('wpm-display').innerText = `${timeLeft}s`;
+                    if (timeLeft <= 0) endGame();
                 }, 1000);
             }
         }
 
         function spawnTarget() {
+            if (!gameActive) return;
+
             let word = getNextWord();
             if (targets.some(t => t.word === word)) word = getNextWord();
 
             let type = 'normal';
             let rand = Math.random();
             if (rand < 0.10) type = 'bomb';
-            else if (rand < 0.18) type = 'freeze';
-            else if (rand < 0.25 && stage >= 2) type = 'boss';
+            else if (rand < 0.20) type = 'freeze';
+            else if (rand < 0.26 && stage >= 2) type = 'boss';
 
             if (type === 'boss') word = bossWords[Math.floor(Math.random() * bossWords.length)];
 
@@ -608,7 +911,7 @@
             el.innerText = word;
 
             let gameCont = document.getElementById('game-container');
-            let maxX = Math.max(20, gameCont.clientWidth - 160);
+            let maxX = Math.max(50, gameCont.clientWidth - 160);
             let x = Math.max(10, Math.random() * maxX);
             let y = -40;
 
@@ -616,12 +919,15 @@
             el.style.top = `${y}px`;
             gameCont.appendChild(el);
 
-            let speed = (0.3 + Math.random() * 0.2) * (1 + (stage - 1) * 0.08);
+            let speedMult = activeEvent.includes("Surge") ? 1.4 : 1.15;
+            let baseSpeed = type === 'boss' ? 0.20 : (0.40 + Math.random() * 0.30);
+            let speed = baseSpeed * speedMult * (1 + (stage - 1) * 0.10);
+
             targets.push({ word, element: el, x, y, speed, type });
         }
 
         function updateGameLoop() {
-            if (gameActive && !isPaused) {
+            if (gameActive) {
                 let gameCont = document.getElementById('game-container');
                 for (let i = targets.length - 1; i >= 0; i--) {
                     let t = targets[i];
@@ -648,6 +954,7 @@
             shields--;
             combo = 1;
             consecutiveHits = 0;
+            playTone(100, 'square', 0.2);
             updateStats();
             if (shields <= 0) endGame();
         }
@@ -660,17 +967,24 @@
         }
 
         function updateMetrics() {
+            let elapsedMin = (Date.now() - startTime) / 60000;
+            if (elapsedMin > 0 && currentMode !== 'timeattack') {
+                let wpm = Math.round((correctTypedChars / 5) / elapsedMin);
+                document.getElementById('wpm-display').innerText = wpm;
+            }
+
             if (score >= stage * 250) {
                 stage++;
+                playTone(850, 'sine', 0.4);
                 let toast = document.getElementById('achievement-toast');
-                toast.innerText = `Stage ${stage} Unlocked!`;
+                toast.innerText = `Stage Up! Quantum Stage ${stage} Unlocked`;
                 toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 2500);
+                setTimeout(() => toast.classList.remove('show'), 3000);
             }
         }
 
         document.getElementById('input-box').addEventListener('input', () => {
-            if (!gameActive || isPaused) return;
+            if (!gameActive) return;
             let inputBox = document.getElementById('input-box');
             let typedVal = inputBox.value.trim().toLowerCase();
 
@@ -684,23 +998,33 @@
 
             if (activeLockedTarget) {
                 if (activeLockedTarget.word.startsWith(typedVal)) {
+                    totalTypedChars++;
+                    correctTypedChars++;
                     let matchedPart = activeLockedTarget.word.substring(0, typedVal.length);
                     let remainingPart = activeLockedTarget.word.substring(typedVal.length);
                     activeLockedTarget.element.innerHTML = `<span class="matched">${matchedPart}</span>${remainingPart}`;
 
                     if (typedVal === activeLockedTarget.word) {
+                        playTone(650, 'sine', 0.1);
                         consecutiveHits++;
                         if (consecutiveHits >= 5 && combo < 3) combo = 3;
+                        if (consecutiveHits >= 12 && combo < 5) combo = 5;
+
                         score += Math.round(activeLockedTarget.word.length * 10 * combo);
 
+                        let rect = activeLockedTarget.element.getBoundingClientRect();
+                        let cRect = document.getElementById('game-container').getBoundingClientRect();
+                        spawnParticles(rect.left - cRect.left + 25, rect.top - cRect.top + 10, activeLockedTarget.type === 'boss' ? '#ff00ff' : '#00ffff');
+
                         if (activeLockedTarget.type === 'bomb') {
-                            score += targets.length * 20;
+                            playTone(90, 'sawtooth', 0.4);
+                            score += targets.length * 30;
                             targets.forEach(t => t.element.remove());
                             targets = [];
                         } else if (activeLockedTarget.type === 'freeze') {
                             targets.forEach(t => {
                                 let oldSpeed = t.speed;
-                                t.speed = 0.12;
+                                t.speed = 0.2;
                                 setTimeout(() => { t.speed = oldSpeed; }, 3000);
                             });
                         } else {
@@ -713,6 +1037,7 @@
                         updateStats();
                     }
                 } else {
+                    totalTypedChars++;
                     activeLockedTarget.element.classList.remove('active-target');
                     activeLockedTarget.element.innerHTML = activeLockedTarget.word;
                     activeLockedTarget = null;
@@ -734,13 +1059,22 @@
             clearInterval(spawnInterval);
             clearInterval(gameTimer);
             document.getElementById('input-box').disabled = true;
+
             document.getElementById('hud-stats').classList.add('hidden');
-            pauseBtn.classList.add('hidden');
+
+            let elapsedMin = (Date.now() - startTime) / 60000;
+            let currentWpm = elapsedMin > 0 ? Math.round((correctTypedChars / 5) / elapsedMin) : 0;
+            let currentAccuracy = totalTypedChars > 0 ? Math.round((correctTypedChars / totalTypedChars) * 100) : 100;
 
             profile.gamesPlayed = (profile.gamesPlayed || 0) + 1;
+            if (currentWpm > (profile.peakWpm || 0)) profile.peakWpm = currentWpm;
+            profile.totalAccuracySum = (profile.totalAccuracySum || 0) + currentAccuracy;
+
             let xpGained = Math.round(score / 5);
+            if (activeEvent.includes("XP")) xpGained *= 2;
             profile.xp += xpGained;
             profile.level = Math.floor(profile.xp / 1000) + 1;
+
             if (score > profile.bestScore) profile.bestScore = score;
 
             if (!profile.leaderboard) profile.leaderboard = [];
@@ -750,7 +1084,9 @@
 
             document.getElementById('final-score').innerText = score;
             document.getElementById('final-stage').innerText = stage;
-            document.getElementById('gained-xp').innerText = `+${xpGained}`;
+            document.getElementById('gained-xp').innerText = `+${xpGained} XP`;
+            updateProfileUI();
+
             document.getElementById('gameover-screen').classList.remove('hidden');
         }
     </script>
