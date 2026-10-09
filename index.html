@@ -105,6 +105,7 @@
             font-size: 0.75rem;
             color: #fff;
             box-shadow: 0 0 10px var(--accent-glow);
+            cursor: pointer;
         }
 
         .user-avatar-mini {
@@ -112,6 +113,7 @@
             height: 24px;
             border-radius: 50%;
             border: 1px solid #00ffff;
+            background: #222;
         }
 
         .stats-container {
@@ -330,16 +332,81 @@
             padding: 20px;
             border-radius: 12px;
             width: 100%;
-            max-width: 380px;
+            max-width: 420px;
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             text-align: center;
+            color: #fff;
         }
-        .modal-content h2 { color: #fff; font-size: 1.05rem; letter-spacing: 1px; border-bottom: 1px solid var(--accent-glow); padding-bottom: 6px; }
+        .modal-content h2 { color: #fff; font-size: 1.1rem; letter-spacing: 1px; border-bottom: 1px solid var(--accent-glow); padding-bottom: 6px; }
+        
+        .profile-header {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            text-align: left;
+            background: rgba(16, 22, 40, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        .profile-avatar-box img {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 2px solid #00ffff;
+            background: #111;
+        }
+        .profile-avatar-box button {
+            margin-top: 5px;
+            font-size: 9px;
+            background: transparent;
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            cursor: pointer;
+            padding: 3px 6px;
+            border-radius: 4px;
+            width: 100%;
+        }
+        .profile-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; }
+        .profile-info label { font-size: 0.7rem; color: #a0a8c0; }
+        .profile-info input {
+            background: #070913;
+            border: 1px solid var(--accent-color);
+            color: #fff;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            outline: none;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .stat-box {
+            background: rgba(16, 22, 40, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 8px;
+            text-align: center;
+            border-radius: 6px;
+        }
+        .stat-box span {
+            display: block;
+            font-size: 1.1rem;
+            color: #00ffff;
+            font-weight: bold;
+        }
+        .stat-box label {
+            font-size: 0.65rem;
+            color: #a0a8c0;
+            text-transform: uppercase;
+        }
+
         .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 5px; }
-        .leaderboard-table th, .leaderboard-table td { border: 1px solid rgba(255, 0, 127, 0.2); padding: 5px; text-align: center; color: #d0d8e8; }
+        .leaderboard-table th, .leaderboard-table td { border: 1px solid rgba(255, 0, 127, 0.2); padding: 6px; text-align: center; color: #d0d8e8; }
         .leaderboard-table th { background: var(--accent-glow); color: var(--accent-color); }
     </style>
 </head>
@@ -348,13 +415,16 @@
     <header>
         <div class="logo">Typing Game <span> V3.4</span></div>
         <div class="nav-actions">
-            <!-- Google Sign In / Profile Button Placeholder -->
             <div id="auth-nav-container">
-                <button class="nav-btn" id="nav-profile-btn">
+                <button class="nav-btn" id="google-login-trigger">
                     <svg viewBox="0 0 24 24" width="14" height="14" style="fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
                     Google Login
                 </button>
             </div>
+            <button class="nav-btn" id="nav-profile-btn">
+                <svg viewBox="0 0 24 24" width="14" height="14" style="fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                Profile
+            </button>
             <button class="nav-btn" id="nav-leaderboard-btn">Leaderboard</button>
             <button class="nav-btn" id="nav-settings-btn">Settings</button>
         </div>
@@ -370,22 +440,53 @@
     <div id="game-container">
         <div id="achievement-toast">System Alert</div>
 
-        <!-- Profile Modal -->
         <div id="profile-modal" class="modal-overlay hidden">
             <div class="modal-content">
-                <h2>PILOT PROFILE</h2>
-                <div id="profile-details-view">
-                    <p style="color:#a0a8c0; font-size: 0.8rem;">Rank Tier: <span id="modal-rank-tier" style="color:#00ffff; font-weight:bold;">Cyber Cadet</span></p>
-                    <p style="color:#a0a8c0; font-size: 0.8rem;">Level: <span id="modal-level" style="color:#fff;">1</span></p>
-                    <p style="color:#a0a8c0; font-size: 0.8rem;">Total XP: <span id="modal-xp" style="color:#ffaa00;">0</span></p>
-                    <p style="color:#a0a8c0; font-size: 0.8rem;">Record Best: <span id="modal-best" style="color:#00ffff;">0</span></p>
+                <h2>OPERATOR PROFILE</h2>
+                
+                <div class="profile-header">
+                    <div class="profile-avatar-box">
+                        <img id="profile-avatar-img" src="https://api.dicebear.com/7.x/bottts/svg?seed=operator" alt="Avatar">
+                        <button id="randomize-avatar-btn">Randomize</button>
+                    </div>
+                    <div class="profile-info">
+                        <label for="profile-username-input">Codename:</label>
+                        <input type="text" id="profile-username-input" value="Guest Operator" maxlength="15">
+                        <p style="font-size: 0.7rem; color: #00ffff; margin-top:2px;" id="profile-status-text">Mode: Local Offline</p>
+                    </div>
                 </div>
-                <button class="nav-btn" id="logout-btn" style="background:rgba(255,0,0,0.2); border-color:#ff3333; color:#ff9999; justify-content:center; margin-top:5px;">Logout Google Account</button>
-                <button class="nav-btn" id="close-profile-btn" style="margin-top:5px; justify-content:center;">BACK</button>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span id="stat-games">0</span>
+                        <label>Simulations</label>
+                    </div>
+                    <div class="stat-box">
+                        <span id="stat-peak-wpm">0</span>
+                        <label>Peak WPM</label>
+                    </div>
+                    <div class="stat-box">
+                        <span id="stat-avg-accuracy">0%</span>
+                        <label>Accuracy</label>
+                    </div>
+                    <div class="stat-box">
+                        <span id="stat-xp">0</span>
+                        <label>Total XP</label>
+                    </div>
+                </div>
+
+                <div style="font-size: 0.75rem; color:#a0a8c0; text-align: left;">
+                    Rank Tier: <span id="modal-rank-tier" style="color:#00ffff; font-weight:bold;">Cyber Cadet</span> | Level: <span id="modal-level" style="color:#fff;">1</span>
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 5px;">
+                    <button class="arcade-btn" id="save-profile-btn" style="flex:1; padding: 8px; font-size:0.85rem;">Save Profile</button>
+                    <button class="nav-btn" id="logout-btn" style="background:rgba(255,0,0,0.15); border-color:#ff3333; color:#ff9999; justify-content:center; display:none;">Google Logout</button>
+                </div>
+                <button class="nav-btn" id="close-profile-btn" style="justify-content:center;">BACK TO MENU</button>
             </div>
         </div>
 
-        <!-- Leaderboard Modal -->
         <div id="leaderboard-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>GLOBAL LEADERBOARD</h2>
@@ -401,7 +502,6 @@
             </div>
         </div>
 
-        <!-- Settings Modal (Color Theme Picker) -->
         <div id="settings-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>THEME COLOR SETTINGS</h2>
@@ -417,7 +517,6 @@
             </div>
         </div>
 
-        <!-- Clean Home Screen -->
         <div id="start-screen" class="overlay">
             <h1>TYPEBLITZ V3.4</h1>
             
@@ -439,7 +538,6 @@
                     <div class="cat-chip" data-cat="coding">Syntax & Code</div>
                 </div>
 
-                <!-- Sub-category selector for Science -->
                 <div id="science-sub-selector" class="config-row hidden" style="margin-top: 4px;">
                     <div class="sub-cat-chip active" data-subcat="all">All Science</div>
                     <div class="sub-cat-chip" data-subcat="biology">Biology</div>
@@ -453,7 +551,6 @@
             <button class="arcade-btn" id="start-btn" style="margin-top: 10px;">INITIALIZE SIMULATION</button>
         </div>
 
-        <!-- Game Over Modal -->
         <div id="gameover-screen" class="overlay hidden">
             <h1 style="color:#ff3333; text-shadow:0 0 20px #ff3333;">SIMULATION TERMINATED</h1>
             <div class="glass-card">
@@ -472,7 +569,6 @@
         <div class="instructions">Type targets fully to clear. Red = Bomb (Screen Clear), Blue = Freeze Time, Purple = Boss.</div>
     </footer>
 
-    <!-- Firebase SDK Modules -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
@@ -483,7 +579,6 @@
             onAuthStateChanged 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // ফায়ারবেস কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyBWPpAhnn-OZokPwh5qFRU8McEvh7smlsQ",
             authDomain: "medical-admission-pro.firebaseapp.com",
@@ -500,7 +595,6 @@
         const authNavContainer = document.getElementById('auth-nav-container');
         const logoutBtn = document.getElementById('logout-btn');
 
-        // গুগল সাইন-ইন ট্রিগার
         async function handleGoogleLogin() {
             try {
                 await signInWithPopup(auth, provider);
@@ -509,7 +603,8 @@
             }
         }
 
-        // লগআউট হ্যান্ডলার
+        document.getElementById('google-login-trigger')?.addEventListener('click', handleGoogleLogin);
+
         logoutBtn.addEventListener('click', async () => {
             try {
                 await signOut(auth);
@@ -519,67 +614,110 @@
             }
         });
 
-        // অথ স্টেট চেকার (UI আপডেট)
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // লগইন করা থাকলে প্রোফাইল কার্ড দেখাবে
-                const displayName = user.displayName ? user.displayName.split(' ')[0] : "Player";
-                const photoURL = user.photoURL || "https://via.placeholder.com/24";
+                window.isGoogleAuthed = true;
+                window.googleUser = user;
                 
                 authNavContainer.innerHTML = `
-                    <div class="user-profile-mini" id="nav-profile-btn" style="cursor:pointer;" title="Click to view profile">
-                        <img src="${photoURL}" class="user-avatar-mini" alt="Avatar">
-                        <span>${displayName}</span>
+                    <div class="user-profile-mini" id="nav-profile-quick" title="View Profile">
+                        <img src="${user.photoURL || 'https://via.placeholder.com/24'}" class="user-avatar-mini" alt="Avatar">
+                        <span>${user.displayName ? user.displayName.split(' ')[0] : "Pilot"}</span>
                     </div>
                 `;
                 
-                // রি-অ্যাসাইন ইভেন্ট লিসেনার ফর প্রোফাইল ওপেন
-                document.getElementById('nav-profile-btn').addEventListener('click', () => {
-                    document.getElementById('profile-modal').classList.remove('hidden');
+                document.getElementById('nav-profile-quick').addEventListener('click', () => {
+                    window.openProfileModal();
                 });
-                
-                window.currentUserId = user.uid;
+
+                document.getElementById('profile-username-input').value = user.displayName || "Google Operator";
+                document.getElementById('profile-avatar-img').src = user.photoURL || "https://api.dicebear.com/7.x/bottts/svg?seed=google";
+                document.getElementById('profile-status-text').innerText = "Mode: Google Cloud Synced";
+                logoutBtn.style.display = "block";
             } else {
-                // লগআউট থাকলে স্ট্যান্ডার্ড গুগল লগইন বাটন দেখাবে
+                window.isGoogleAuthed = false;
+                window.googleUser = null;
+                
                 authNavContainer.innerHTML = `
                     <button class="nav-btn" id="google-login-trigger">
                         <svg viewBox="0 0 24 24" width="14" height="14" style="fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
                         Google Login
                     </button>
                 `;
-                
                 document.getElementById('google-login-trigger').addEventListener('click', handleGoogleLogin);
-                
-                // প্রোফাইল বাটনে ক্লিক করলে লগইন করতে প্রম্পট করবে অথবা প্রোফাইল মডাল দেখাবে
-                document.getElementById('nav-profile-btn')?.addEventListener('click', () => {
-                    document.getElementById('profile-modal').classList.remove('hidden');
-                });
-
-                window.currentUserId = null;
+                logoutBtn.style.display = "none";
+                document.getElementById('profile-status-text').innerText = "Mode: Local Offline";
             }
         });
     </script>
 
-    <!-- Game Core Script -->
+    <!-- Game Core Script with Massive Unique Dictionary & No-Repeat Tracking -->
     <script>
         const scienceSubCategories = {
-            biology: ["photosynthesis", "mitochondria", "chromosome", "ecosystem", "osmosis", "catalyst", "molecule", "genetics", "organelle", "homeostasis", "enzyme", "neuron", "nucleus", "symbiosis", "cytoplasm", "respiration", "metabolism", "protein", "ribosome", "pathogen", "antibodies", "evolution", "biodiversity", "chloroplast", "dna", "homeostasis", "phagocyte", "endoplasmic", "eukaryote", "prokaryote"],
-            physics: ["thermodynamics", "momentum", "electromagnetism", "velocity", "gravitation", "relativity", "quantum", "entropy", "isotope", "quark", "electron", "proton", "wavelength", "frequency", "acceleration", "kinetic", "potential", "friction", "inertia", "superposition", "plasma", "radiation", "photon", "capacitor", "torque", "superconductor", "oscillation", "relativity", "spectrometry", "vector"],
-            chemistry: ["stoichiometry", "endothermic", "exothermic", "electronegativity", "polymerization", "catalysis", "titration", "hydrocarbon", "molarity", "enthalpy", "allotrope", "buffer", "valence", "oxidation", "reduction", "solution", "equilibrium", "precipitate", "spectroscopy", "isotope", "alkane", "catalyst", "combustion", "electrolysis", "isomer"],
-            astronomy: ["supernova", "singularity", "nebula", "pulsar", "quasar", "magnetar", "heliosphere", "astrometry", "parsec", "spectrograph", "bolide", "exoplanet", "accretion", "cosmology", "interstellar", "horizon", "redshift", "blazar", "starlight", "telescope", "astrolabe", "chromosphere", "eclipse", "galaxy", "supercluster"],
-            earth: ["tectonics", "stratigraphy", "lithosphere", "hydrological", "atmosphere", "stratosphere", "troposphere", "seismograph", "subduction", "magma", "metamorphic", "sedimentary", "phenomenon", "biosphere", "cryosphere", "orogeny", "paleontology", "geothermal", "aquifer", "weathering", "epicenter", "faultline", "topography", "tsunami", "volcanology"]
+            biology: [
+                "photosynthesis", "mitochondria", "chromosome", "ecosystem", "osmosis", "catalyst", "molecule", "genetics", "organelle", "homeostasis", "enzyme", "neuron", "nucleus", "symbiosis", "cytoplasm", "respiration", "metabolism", "protein", "ribosome", "pathogen", "antibodies", "evolution", "biodiversity", "chloroplast", "dna", "phagocyte", "endoplasmic", "eukaryote", "prokaryote", "alleles",
+                "adaptation", "aerobic", "anaerobic", "amino", "acid", "anatomy", "artery", "asexual", "bacteria", "biodegradable", "biomes", "biosynthesis", "biota", "blastula", "botany", "bryophyte", "calorie", "carbohydrate", "carnivore", "carotenoid", "cartilage", "cell", "centriole", "centromere", "cephalopod", "cerebellum", "cerebrum", "chemosynthesis", "chitin", "chlorophyll",
+                "cholesterol", "chromatin", "cilia", "circulatory", "cistron", "cleavage", "clone", "cochlea", "codominance", "codon", "coenzyme", "colony", "commensalism", "companion", "competition", "compound", "conception", "conifer", "conjugation", "connective", "consumer", "contractile", "cortex", "cotyledon", "cranial", "cristae", "crossing", "crustacean", "cuticle", "cyanobacteria"
+            ],
+            physics: [
+                "thermodynamics", "momentum", "electromagnetism", "velocity", "gravitation", "relativity", "quantum", "entropy", "isotope", "quark", "electron", "proton", "wavelength", "frequency", "acceleration", "kinetic", "potential", "friction", "inertia", "superposition", "plasma", "radiation", "photon", "capacitor", "torque", "superconductor", "oscillation", "spectrometry", "vector", "amplitude",
+                "annihilation", "antimatter", "aphelion", "armature", "astigmatism", "attenuation", "avogadro", "axis", "barometer", "becquerel", "beta", "bifocal", "binary", "binomial", "birefringence", "blackbody", "boltzmann", "boson", "boyle", "brewster", "brownian", "buoyancy", "calorimeter", "candela", "capacitance", "centrifugal", "centripetal", "chaos", "charge", "charles",
+                "chromatic", "circuit", "clapeyron", "cohesion", "collimator", "collisions", "component", "compressibility", "concave", "condenser", "conduction", "conductivity", "conductor", "conserve", "constant", "constructive", "convection", "converging", "convex", "coulomb", "counterweight", "crest", "critical", "cryogenics", "curie", "current", "cyclotron", "damping", "deceleration", "decibel"
+            ],
+            chemistry: [
+                "stoichiometry", "endothermic", "exothermic", "electronegativity", "polymerization", "catalysis", "titration", "hydrocarbon", "molarity", "enthalpy", "allotrope", "buffer", "valence", "oxidation", "reduction", "solution", "equilibrium", "precipitate", "spectroscopy", "alkane", "combustion", "electrolysis", "isomer", "acid", "actinide",
+                "activation", "adsorption", "aerogel", "alchemy", "aliphatic", "alkaline", "alkene", "alkyne", "alloys", "alpha", "alumina", "amalgam", "amide", "amine", "amorphous", "amphoteric", "anhydrous", "anion", "anode", "antiaromatic", "aqueous", "arenes", "argentum", "aromatic", "arrhenius", "atmosphere", "atom", "atomic", "attractor", "aurum",
+                "avogadro", "azeotrope", "azide", "azo", "barium", "base", "becquerel", "beer", "benzene", "berkelium", "beryllium", "bismuth", "bohrium", "boiling", "bond", "borane", "boron", "boyle", "bragg", "brass", "bromine", "bronsted", "bronze", "buckyball", "buren", "butane", "cadmium", "calcium", "californium", "calorimeter"
+            ],
+            astronomy: [
+                "supernova", "singularity", "nebula", "pulsar", "quasar", "magnetar", "heliosphere", "astrometry", "parsec", "spectrograph", "bolide", "exoplanet", "accretion", "cosmology", "interstellar", "horizon", "redshift", "blazar", "starlight", "telescope", "astrolabe", "chromosphere", "eclipse", "galaxy", "supercluster", "apastron",
+                "apee", "apocenter", "apogee", "apsides", "areocentric", "asterism", "asteroid", "astrolabe", "astrometry", "astronaut", "astronomical", "astrophysics", "atmosphere", "aurora", "autumnal", "azimuth", "background", "baricenter", "barycenter", "binary", "blazar", "bolide", "bolometer", "bow", "brown", "candidate", "cataclysmic", "celestial", "centaur", "cepheid",
+                "chandrasekhar", "charge", "chromosphere", "circumpolar", "cluster", "collimation", "comet", "conjunction", "constellation", "continental", "continuum", "convection", "corona", "coronagraph", "cosmic", "cosmological", "cosmos", "crater", "critical", "cronus", "curvature", "cyanogen", "cycle", "cyclical", "dark", "declination", "deferent", "degenerate", "density", "diameter"
+            ],
+            earth: [
+                "tectonics", "stratigraphy", "lithosphere", "hydrological", "atmosphere", "stratosphere", "troposphere", "seismograph", "subduction", "magma", "metamorphic", "sedimentary", "phenomenon", "biosphere", "cryosphere", "orogeny", "paleontology", "geothermal", "aquifer", "weathering", "epicenter", "faultline", "topography", "tsunami", "volcanology", "ablation",
+                "abyssal", "accretion", "acid", "aftershock", "aggradation", "alluvial", "alpine", "altimeter", "altitude", "ambient", "amphibole", "andesite", "anticline", "anticyclone", "aphanitic", "aqueduct", "aquiclude", "aquitard", "archipelago", "arenaceous", "arête", "arkose", "artesian", "ash", "asthenosphere", "atoll", "avalanche", "badlands", "barchan", "barrier",
+                "basalt", "basin", "batholith", "bauxite", "beach", "bedrock", "benthos", "berm", "bifurcation", "biodegradable", "biomicrite", "biostrome", "biotite", "birefringence", "bitumen", "blizzard", "block", "blowout", "boding", "bog", "bolson", "bomb", "boom", "bore", "boulder", "boundary", "breccia", "brine", "bryozoan", "buerger"
+            ]
         };
 
         const masterDictionaries = {
-            tech: ["algorithm", "bandwidth", "circuit", "database", "ethernet", "firewall", "gigabyte", "hardware", "interface", "javascript", "keyboard", "mainframe", "network", "optimizer", "processor", "quantum", "router", "software", "terminal", "ultrasound", "virtual", "wireless", "xenia", "yotabyte", "zero", "analytics", "blockchain", "compiler", "debugging", "encryption"],
+            tech: [
+                "algorithm", "bandwidth", "circuit", "database", "ethernet", "firewall", "gigabyte", "hardware", "interface", "javascript", "keyboard", "mainframe", "network", "optimizer", "processor", "quantum", "router", "software", "terminal", "ultrasound", "virtual", "wireless", "xenia", "yotabyte", "zero", "analytics", "blockchain", "compiler", "debugging", "encryption",
+                "accessibility", "accumulator", "adapter", "address", "agent", "aggregate", "agile", "allocation", "analyst", "android", "antivirus", "apache", "applet", "application", "architecture", "archive", "argument", "array", "artifact", "assembler", "assertion", "async", "atomic", "attribute", "audio", "augmented", "automation", "avatar", "backend", "backup",
+                "balancing", "batch", "battery", "beacon", "benchmark", "binary", "biometric", "bitrate", "bluetooth", "bootloader", "botnet", "breakpoint", "broadband", "browser", "buffer", "bugfix", "bytecode", "cache", "callback", "camera", "canvas", "capacitor", "captcha", "capture", "cascade", "catalog", "catalyst", "cc", "cdrom", "cellular",
+                "certificate", "chatbot", "chipset", "ciphertext", "client", "cluster", "codec", "coldboot", "colocation", "command", "comment", "commercial", "common", "communication", "community", "compatible", "compilation", "component", "compressed", "compute", "computer", "computing", "concatenate", "concurrency", "config", "connection", "console", "constant", "container", "content"
+            ],
             science: [...scienceSubCategories.biology, ...scienceSubCategories.physics, ...scienceSubCategories.chemistry, ...scienceSubCategories.astronomy, ...scienceSubCategories.earth],
-            scifi: ["andromeda", "battleship", "cortex", "dimension", "eclipse", "fusion", "galaxy", "hologram", "ionizer", "juggernaut", "krypton", "laserbeam", "meteorite", "nebula", "outpost", "photon", "quasar", "reactor", "singularity", "tachyon", "universe", "vortex", "wormhole", "xenon", "yoda", "zenith", "astro", "bounty", "cyber", "dreadnought"],
-            coding: ["asynchronous", "boolean", "constant", "dependency", "encapsulation", "framework", "generator", "inheritance", "JSON", "keyword", "lambda", "middleware", "namespace", "override", "polymorphism", "query", "recursion", "statement", "typescript", "undefined", "variable", "webpack", "xmlhttprequest", "yield", "closure", "destructuring", "export", "import", "promise", "syntax"]
+            scifi: [
+                "andromeda", "battleship", "cortex", "dimension", "eclipse", "fusion", "galaxy", "hologram", "ionizer", "juggernaut", "krypton", "laserbeam", "meteorite", "nebula", "outpost", "photon", "quasar", "reactor", "singularity", "tachyon", "universe", "vortex", "wormhole", "xenon", "yoda", "zenith", "astro", "bounty", "cyber", "dreadnought",
+                "accelerator", "aerospace", "alien", "alpha", "amplify", "anomaly", "anti", "armored", "artificial", "astral", "atomic", "augmented", "automaton", "avatar", "barrier", "beacon", "beam", "bionic", "biosphere", "blaster", "borg", "bounty", "brane", "breach", "bridge", "bunker", "capsule", "carbon", "cargo", "celestial",
+                "centauri", "chamber", "chaos", "charged", "chronal", "chronicle", "chronos", "circuit", "civilization", "clone", "cluster", "cockpit", "colony", "command", "commander", "common", "communication", "computer", "conduit", "conflict", "conqueror", "console", "contact", "containment", "core", "corridor", "cosmic", "cosmos", "counter", "covenant",
+                "cradle", "crew", "cryo", "crypt", "crystal", "cst", "current", "cybernetic", "cyborg", "cycle", "cygnus", "cylinder", "dagger", "darkness", "data", "datum", "dawn", "daylight", "debris", "decoy", "deep", "defend", "deflector", "delta", "density", "depot", "derelict", "descent", "destiny", "destroyer"
+            ],
+            coding: [
+                "asynchronous", "boolean", "constant", "dependency", "encapsulation", "framework", "generator", "inheritance", "JSON", "keyword", "lambda", "middleware", "namespace", "override", "polymorphism", "query", "recursion", "statement", "typescript", "undefined", "variable", "webpack", "xmlhttprequest", "yield", "closure", "destructuring", "export", "import", "promise", "syntax",
+                "abstract", "accept", "access", "accessor", "action", "activation", "active", "adapter", "add", "addition", "address", "adjacency", "agent", "aggregate", "ajax", "algorithm", "alias", "allocate", "allow", "alpha", "alter", "always", "ambient", "ambiguous", "amount", "analysis", "analytic", "anchor", "android", "angular",
+                "animate", "annotation", "anonymous", "answer", "antialiasing", "any", "apache", "apex", "api", "app", "append", "apple", "application", "applied", "apply", "applet", "approval", "approximate", "apps", "arch", "architecture", "archive", "area", "arena", "argon", "argument", "arithmetic", "arm", "array", "arrival",
+                "arrow", "artifact", "artificial", "as", "asc", "ascii", "aspect", "assemble", "assembler", "assembly", "assert", "assertion", "asset", "assign", "assignment", "assist", "associate", "association", "assume", "asterisk", "async", "asynchronous", "at", "atom", "atomic", "attach", "attachment", "attack", "attempt", "attend"
+            ]
         };
 
         const bossWords = ["overlord_quantum_core", "sentinel_mainframe_prime", "hyper_gateway_guardian_x"];
 
-        let profile = JSON.parse(localStorage.getItem('typeblitz_v36_profile')) || { xp: 0, level: 1, bestScore: 0, leaderboard: [], themeColor: '#ff007f' };
+        // Profile State
+        let profile = JSON.parse(localStorage.getItem('typeblitz_v36_profile')) || { 
+            username: "Guest Operator",
+            avatarSeed: "operator_seed",
+            xp: 0, 
+            level: 1, 
+            bestScore: 0, 
+            gamesPlayed: 0,
+            totalAccuracySum: 0,
+            peakWpm: 0,
+            leaderboard: [], 
+            themeColor: '#ff007f' 
+        };
         
         function applyTheme(color) {
             document.documentElement.style.setProperty('--accent-color', color);
@@ -592,6 +730,7 @@
         let score = 0, stage = 1, combo = 1, consecutiveHits = 0, shields = 3;
         let gameActive = false, currentMode = 'arcade', currentCat = 'tech', currentSubCat = 'all';
         let targets = [], availableWords = [];
+        let usedWordsDuringSession = new Set(); // No-repeats tracker during current run
         let spawnInterval = null, gameTimer = null, timeLeft = 60;
         let totalTypedChars = 0, correctTypedChars = 0, startTime = 0;
 
@@ -610,7 +749,16 @@
             document.getElementById('modal-rank-tier').innerText = getRankTier(profile.level);
             document.getElementById('modal-level').innerText = profile.level;
             document.getElementById('modal-xp').innerText = profile.xp;
-            document.getElementById('modal-best').innerText = profile.bestScore;
+            
+            document.getElementById('stat-games').innerText = profile.gamesPlayed || 0;
+            document.getElementById('stat-peak-wpm').innerText = profile.peakWpm || 0;
+            let avgAcc = profile.gamesPlayed > 0 ? Math.round(profile.totalAccuracySum / profile.gamesPlayed) : 0;
+            document.getElementById('stat-avg-accuracy').innerText = avgAcc + "%";
+
+            if (!window.isGoogleAuthed) {
+                document.getElementById('profile-username-input').value = profile.username;
+                document.getElementById('profile-avatar-img').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${profile.avatarSeed}`;
+            }
 
             let lbTable = document.getElementById('leaderboard-rows');
             if (profile.leaderboard.length > 0) {
@@ -619,10 +767,29 @@
                 ).join('');
             }
         }
-        updateProfileUI();
 
-        // Navbar & Modal Controls
+        window.openProfileModal = function() {
+            updateProfileUI();
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('nav-profile-btn').addEventListener('click', window.openProfileModal);
         document.getElementById('close-profile-btn').addEventListener('click', () => {
+            document.getElementById('profile-modal').classList.add('hidden');
+        });
+
+        document.getElementById('randomize-avatar-btn').addEventListener('click', () => {
+            if (window.isGoogleAuthed) return;
+            profile.avatarSeed = Math.random().toString(36).substring(7);
+            document.getElementById('profile-avatar-img').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${profile.avatarSeed}`;
+        });
+
+        document.getElementById('save-profile-btn').addEventListener('click', () => {
+            if (!window.isGoogleAuthed) {
+                let newName = document.getElementById('profile-username-input').value.trim();
+                if (newName) profile.username = newName;
+            }
+            localStorage.setItem('typeblitz_v36_profile', JSON.stringify(profile));
             document.getElementById('profile-modal').classList.add('hidden');
         });
 
@@ -737,8 +904,20 @@
         }
 
         function getNextWord() {
-            if (availableWords.length === 0) refillWordPool();
-            return availableWords.pop();
+            if (availableWords.length === 0) {
+                refillWordPool();
+                usedWordsDuringSession.clear(); // Reset history tracker loop when pool completes
+            }
+
+            // Find an unused word from the pool to guarantee no immediate repetition
+            let word = availableWords.pop();
+            while (usedWordsDuringSession.has(word) && availableWords.length > 0) {
+                availableWords.unshift(word);
+                word = availableWords.pop();
+            }
+
+            usedWordsDuringSession.add(word);
+            return word;
         }
 
         function startGame() {
@@ -769,6 +948,7 @@
             timeLeft = 60;
 
             refillWordPool();
+            usedWordsDuringSession.clear();
             updateStats();
 
             clearInterval(spawnInterval);
@@ -931,6 +1111,14 @@
             document.getElementById('input-box').disabled = true;
 
             document.getElementById('hud-stats').classList.add('hidden');
+
+            let elapsedMin = (Date.now() - startTime) / 60000;
+            let currentWpm = elapsedMin > 0 ? Math.round((correctTypedChars / 5) / elapsedMin) : 0;
+            let currentAccuracy = totalTypedChars > 0 ? Math.round((correctTypedChars / totalTypedChars) * 100) : 100;
+
+            profile.gamesPlayed = (profile.gamesPlayed || 0) + 1;
+            if (currentWpm > (profile.peakWpm || 0)) profile.peakWpm = currentWpm;
+            profile.totalAccuracySum = (profile.totalAccuracySum || 0) + currentAccuracy;
 
             let xpGained = Math.round(score / 5);
             if (activeEvent.includes("XP")) xpGained *= 2;
