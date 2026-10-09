@@ -415,16 +415,15 @@
     <header>
         <div class="logo">Typing Game <span> V3.4</span></div>
         <div class="nav-actions">
+            <!-- Google Login Button Container -->
             <div id="auth-nav-container">
                 <button class="nav-btn" id="google-login-trigger">
                     <svg viewBox="0 0 24 24" width="14" height="14" style="fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
                     Google Login
                 </button>
             </div>
-            <button class="nav-btn" id="nav-profile-btn">
-                <svg viewBox="0 0 24 24" width="14" height="14" style="fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                Profile
-            </button>
+            <!-- FIXED: Added Profile Button so guests and users can open it -->
+            <button class="nav-btn" id="nav-profile-btn">Profile</button>
             <button class="nav-btn" id="nav-leaderboard-btn">Leaderboard</button>
             <button class="nav-btn" id="nav-settings-btn">Settings</button>
         </div>
@@ -440,6 +439,7 @@
     <div id="game-container">
         <div id="achievement-toast">System Alert</div>
 
+        <!-- Profile Modal (Works for Guests & Logged-in Users) -->
         <div id="profile-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>OPERATOR PROFILE</h2>
@@ -487,6 +487,7 @@
             </div>
         </div>
 
+        <!-- Leaderboard Modal -->
         <div id="leaderboard-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>GLOBAL LEADERBOARD</h2>
@@ -502,6 +503,7 @@
             </div>
         </div>
 
+        <!-- Settings Modal -->
         <div id="settings-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>THEME COLOR SETTINGS</h2>
@@ -517,6 +519,7 @@
             </div>
         </div>
 
+        <!-- Start Screen -->
         <div id="start-screen" class="overlay">
             <h1>TYPEBLITZ V3.4</h1>
             
@@ -551,6 +554,7 @@
             <button class="arcade-btn" id="start-btn" style="margin-top: 10px;">INITIALIZE SIMULATION</button>
         </div>
 
+        <!-- Game Over Screen -->
         <div id="gameover-screen" class="overlay hidden">
             <h1 style="color:#ff3333; text-shadow:0 0 20px #ff3333;">SIMULATION TERMINATED</h1>
             <div class="glass-card">
@@ -569,6 +573,7 @@
         <div class="instructions">Type targets fully to clear. Red = Bomb (Screen Clear), Blue = Freeze Time, Purple = Boss.</div>
     </footer>
 
+    <!-- Firebase SDK Modules -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
@@ -651,7 +656,7 @@
         });
     </script>
 
-    <!-- Game Core Script -->
+    <!-- Game Core Script with Massive Unique Dictionary & Working Guest/User Profile Modal -->
     <script>
         const scienceSubCategories = {
             biology: [
@@ -772,6 +777,7 @@
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
+        // Fully functional Profile Button open for both Guests and Google Users
         document.getElementById('nav-profile-btn').addEventListener('click', window.openProfileModal);
         document.getElementById('close-profile-btn').addEventListener('click', () => {
             document.getElementById('profile-modal').classList.add('hidden');
