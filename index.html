@@ -118,13 +118,15 @@
 
         .stats-container {
             display: flex;
-            gap: 12px;
-            font-size: 0.75rem;
+            gap: 16px;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #a0a8c0;
             width: 100%;
             justify-content: center;
+            padding: 4px 0;
+            background: rgba(7, 9, 19, 0.5);
         }
 
         .stat span {
@@ -742,7 +744,7 @@
         let usedWordsDuringSession = new Set();
         let spawnInterval = null, gameTimer = null, timeLeft = 60;
         let totalTypedChars = 0, correctTypedChars = 0, startTime = 0;
-        let activeLockedTarget = null; // Bugfix: Lock target during typing
+        let activeLockedTarget = null;
 
         const weeklyEvents = ["Quantum Surge (+Speed)", "Double XP Protocol", "Shield Boost Week", "Standard Synchronicity"];
         let activeEvent = weeklyEvents[Math.floor(Date.now() / (1000 * 60 * 60 * 24 * 7)) % weeklyEvents.length];
@@ -1077,7 +1079,6 @@
             let typedVal = inputBox.value.trim().toLowerCase();
             totalTypedChars++;
 
-            // Bugfix: Lock onto active target or find matching target cleanly
             if (!activeLockedTarget) {
                 activeLockedTarget = targets.find(t => t.word.startsWith(typedVal));
                 if (activeLockedTarget) {
@@ -1126,7 +1127,6 @@
                         updateStats();
                     }
                 } else {
-                    // Typo reset for locked target
                     activeLockedTarget.element.classList.remove('active-target');
                     activeLockedTarget.element.innerHTML = activeLockedTarget.word;
                     activeLockedTarget = null;
