@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Typing Game by Rakib v3.0.04</title>
+    <title>Typing Game by Rakib v3.4</title>
     <style>
         :root {
             --accent-color: #ff007f;
@@ -164,11 +164,17 @@
             white-space: nowrap;
             z-index: 4;
             backdrop-filter: blur(4px);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .target.active-target {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px #00ffff;
         }
 
         .target.special-bomb { background: rgba(45, 10, 20, 0.9); border-color: #ff3333; box-shadow: 0 0 20px #ff3333; color: #ffcccc; }
         .target.special-freeze { background: rgba(10, 30, 45, 0.9); border-color: #00ffff; box-shadow: 0 0 20px #00ffff; color: #cce6ff; }
-        .target.boss-word { background: rgba(40, 10, 40, 0.9); border: 2px dashed #ff00ff; box-shadow: 0 0 25px #ff00ff; font-size: 1.15rem; color: #ffccff; }
+        .target.boss-word { background: rgba(40, 10, 40, 0.9); border: 2px dashed #ff00ff; box-shadow: 0 0 25px #ff00ff; font-size: 1.05rem; color: #ffccff; }
 
         .target .matched { color: #00ffff; text-shadow: 0 0 10px #00ffff; font-weight: bold; }
         .target.special-bomb .matched { color: #ff3333; text-shadow: 0 0 10px #ff3333; }
@@ -422,7 +428,6 @@
                     Google Login
                 </button>
             </div>
-            <!-- FIXED: Added Profile Button so guests and users can open it -->
             <button class="nav-btn" id="nav-profile-btn">Profile</button>
             <button class="nav-btn" id="nav-leaderboard-btn">Leaderboard</button>
             <button class="nav-btn" id="nav-settings-btn">Settings</button>
@@ -439,7 +444,7 @@
     <div id="game-container">
         <div id="achievement-toast">System Alert</div>
 
-        <!-- Profile Modal (Works for Guests & Logged-in Users) -->
+        <!-- Profile Modal -->
         <div id="profile-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2>OPERATOR PROFILE</h2>
@@ -656,7 +661,7 @@
         });
     </script>
 
-    <!-- Game Core Script with Massive Unique Dictionary & Working Guest/User Profile Modal -->
+    <!-- Game Core Script -->
     <script>
         const scienceSubCategories = {
             biology: [
@@ -737,6 +742,7 @@
         let usedWordsDuringSession = new Set();
         let spawnInterval = null, gameTimer = null, timeLeft = 60;
         let totalTypedChars = 0, correctTypedChars = 0, startTime = 0;
+        let activeLockedTarget = null; // Bugfix: Lock target during typing
 
         const weeklyEvents = ["Quantum Surge (+Speed)", "Double XP Protocol", "Shield Boost Week", "Standard Synchronicity"];
         let activeEvent = weeklyEvents[Math.floor(Date.now() / (1000 * 60 * 60 * 24 * 7)) % weeklyEvents.length];
@@ -752,7 +758,7 @@
         function updateProfileUI() {
             document.getElementById('modal-rank-tier').innerText = getRankTier(profile.level);
             document.getElementById('modal-level').innerText = profile.level;
-            document.getElementById('modal-xp').innerText = profile.xp;
+            document.getElementById('stat-xp').innerText = profile.xp;
             
             document.getElementById('stat-games').innerText = profile.gamesPlayed || 0;
             document.getElementById('stat-peak-wpm').innerText = profile.peakWpm || 0;
@@ -765,10 +771,12 @@
             }
 
             let lbTable = document.getElementById('leaderboard-rows');
-            if (profile.leaderboard.length > 0) {
+            if (profile.leaderboard && profile.leaderboard.length > 0) {
                 lbTable.innerHTML = profile.leaderboard.slice(0, 5).map((entry, idx) => 
                     `<tr><td>#${idx+1}</td><td>${entry.score}</td><td>Stage ${entry.stage}</td></tr>`
                 ).join('');
+            } else {
+                lbTable.innerHTML = `<tr><td colspan="3">No records found</td></tr>`;
             }
         }
 
@@ -777,7 +785,6 @@
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
-        // Fully functional Profile Button open for both Guests and Google Users
         document.getElementById('nav-profile-btn').addEventListener('click', window.openProfileModal);
         document.getElementById('close-profile-btn').addEventListener('click', () => {
             document.getElementById('profile-modal').classList.add('hidden');
@@ -799,6 +806,7 @@
         });
 
         document.getElementById('nav-leaderboard-btn').addEventListener('click', () => {
+            updateProfileUI();
             document.getElementById('leaderboard-modal').classList.remove('hidden');
         });
         document.getElementById('close-leaderboard-btn').addEventListener('click', () => {
@@ -943,6 +951,8 @@
             combo = 1;
             consecutiveHits = 0;
             shields = currentMode === 'survival' ? 1 : 3;
+            activeLockedTarget = null;
+
             targets.forEach(t => t.element.remove());
             targets = [];
             gameActive = true;
@@ -956,11 +966,12 @@
             updateStats();
 
             clearInterval(spawnInterval);
+            clearInterval(gameTimer);
+
             let rate = currentMode === 'timeattack' ? 1000 : 1400;
             spawnInterval = setInterval(spawnTarget, rate);
 
             if (currentMode === 'timeattack') {
-                clearInterval(gameTimer);
                 gameTimer = setInterval(() => {
                     timeLeft--;
                     document.getElementById('wpm-display').innerText = `${timeLeft}s`;
@@ -1012,6 +1023,10 @@
                     t.element.style.top = `${t.y}px`;
 
                     if (t.y > gameCont.clientHeight - 45) {
+                        if (activeLockedTarget === t) {
+                            activeLockedTarget = null;
+                            document.getElementById('input-box').value = '';
+                        }
                         t.element.remove();
                         targets.splice(i, 1);
                         handleMiss();
@@ -1062,46 +1077,65 @@
             let typedVal = inputBox.value.trim().toLowerCase();
             totalTypedChars++;
 
-            let matchedTarget = targets.find(t => t.word.startsWith(typedVal));
+            // Bugfix: Lock onto active target or find matching target cleanly
+            if (!activeLockedTarget) {
+                activeLockedTarget = targets.find(t => t.word.startsWith(typedVal));
+                if (activeLockedTarget) {
+                    targets.forEach(t => t.element.classList.remove('active-target'));
+                    activeLockedTarget.element.classList.add('active-target');
+                }
+            }
 
-            if (matchedTarget) {
-                correctTypedChars++;
-                let matchedPart = matchedTarget.word.substring(0, typedVal.length);
-                let remainingPart = matchedTarget.word.substring(typedVal.length);
-                matchedTarget.element.innerHTML = `<span class="matched">${matchedPart}</span>${remainingPart}`;
+            if (activeLockedTarget) {
+                if (activeLockedTarget.word.startsWith(typedVal)) {
+                    correctTypedChars++;
+                    let matchedPart = activeLockedTarget.word.substring(0, typedVal.length);
+                    let remainingPart = activeLockedTarget.word.substring(typedVal.length);
+                    activeLockedTarget.element.innerHTML = `<span class="matched">${matchedPart}</span>${remainingPart}`;
 
-                if (typedVal === matchedTarget.word) {
-                    playTone(650, 'sine', 0.1);
-                    consecutiveHits++;
-                    if (consecutiveHits >= 5 && combo < 3) combo = 3;
-                    if (consecutiveHits >= 12 && combo < 5) combo = 5;
+                    if (typedVal === activeLockedTarget.word) {
+                        playTone(650, 'sine', 0.1);
+                        consecutiveHits++;
+                        if (consecutiveHits >= 5 && combo < 3) combo = 3;
+                        if (consecutiveHits >= 12 && combo < 5) combo = 5;
 
-                    score += Math.round(matchedTarget.word.length * 10 * combo);
+                        score += Math.round(activeLockedTarget.word.length * 10 * combo);
 
-                    let rect = matchedTarget.element.getBoundingClientRect();
-                    let cRect = document.getElementById('game-container').getBoundingClientRect();
-                    spawnParticles(rect.left - cRect.left + 25, rect.top - cRect.top + 10, matchedTarget.type === 'boss' ? '#ff00ff' : '#00ffff');
+                        let rect = activeLockedTarget.element.getBoundingClientRect();
+                        let cRect = document.getElementById('game-container').getBoundingClientRect();
+                        spawnParticles(rect.left - cRect.left + 25, rect.top - cRect.top + 10, activeLockedTarget.type === 'boss' ? '#ff00ff' : '#00ffff');
 
-                    if (matchedTarget.type === 'bomb') {
-                        playTone(90, 'sawtooth', 0.4);
-                        score += targets.length * 30;
-                        targets.forEach(t => t.element.remove());
-                        targets = [];
-                    } else if (matchedTarget.type === 'freeze') {
-                        targets.forEach(t => {
-                            let oldSpeed = t.speed;
-                            t.speed = 0.2;
-                            setTimeout(() => { t.speed = oldSpeed; }, 3000);
-                        });
-                    } else {
-                        matchedTarget.element.remove();
-                        targets = targets.filter(t => t !== matchedTarget);
+                        if (activeLockedTarget.type === 'bomb') {
+                            playTone(90, 'sawtooth', 0.4);
+                            score += targets.length * 30;
+                            targets.forEach(t => t.element.remove());
+                            targets = [];
+                        } else if (activeLockedTarget.type === 'freeze') {
+                            targets.forEach(t => {
+                                let oldSpeed = t.speed;
+                                t.speed = 0.2;
+                                setTimeout(() => { t.speed = oldSpeed; }, 3000);
+                            });
+                        } else {
+                            activeLockedTarget.element.remove();
+                            targets = targets.filter(t => t !== activeLockedTarget);
+                        }
+
+                        activeLockedTarget = null;
+                        inputBox.value = '';
+                        updateStats();
                     }
-
-                    inputBox.value = '';
+                } else {
+                    // Typo reset for locked target
+                    activeLockedTarget.element.classList.remove('active-target');
+                    activeLockedTarget.element.innerHTML = activeLockedTarget.word;
+                    activeLockedTarget = null;
+                    combo = 1;
+                    consecutiveHits = 0;
                     updateStats();
                 }
             } else {
+                inputBox.value = '';
                 combo = 1;
                 consecutiveHits = 0;
                 updateStats();
@@ -1131,6 +1165,7 @@
 
             if (score > profile.bestScore) profile.bestScore = score;
 
+            if (!profile.leaderboard) profile.leaderboard = [];
             profile.leaderboard.push({ score, stage });
             profile.leaderboard.sort((a, b) => b.score - a.score);
             localStorage.setItem('typeblitz_v36_profile', JSON.stringify(profile));
