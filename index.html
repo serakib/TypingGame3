@@ -651,7 +651,7 @@
         });
     </script>
 
-    <!-- Game Core Script with Massive Unique Dictionary & No-Repeat Tracking -->
+    <!-- Game Core Script -->
     <script>
         const scienceSubCategories = {
             biology: [
@@ -730,7 +730,7 @@
         let score = 0, stage = 1, combo = 1, consecutiveHits = 0, shields = 3;
         let gameActive = false, currentMode = 'arcade', currentCat = 'tech', currentSubCat = 'all';
         let targets = [], availableWords = [];
-        let usedWordsDuringSession = new Set(); // No-repeats tracker during current run
+        let usedWordsDuringSession = new Set();
         let spawnInterval = null, gameTimer = null, timeLeft = 60;
         let totalTypedChars = 0, correctTypedChars = 0, startTime = 0;
 
@@ -773,6 +773,7 @@
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
+        // Properly connected profile button listeners
         document.getElementById('nav-profile-btn').addEventListener('click', window.openProfileModal);
         document.getElementById('close-profile-btn').addEventListener('click', () => {
             document.getElementById('profile-modal').classList.add('hidden');
@@ -906,10 +907,9 @@
         function getNextWord() {
             if (availableWords.length === 0) {
                 refillWordPool();
-                usedWordsDuringSession.clear(); // Reset history tracker loop when pool completes
+                usedWordsDuringSession.clear();
             }
 
-            // Find an unused word from the pool to guarantee no immediate repetition
             let word = availableWords.pop();
             while (usedWordsDuringSession.has(word) && availableWords.length > 0) {
                 availableWords.unshift(word);
